@@ -1,0 +1,18 @@
+{
+	"manifest_version": 2,
+	"name": "Cymon Interceptor",
+	"description": "Cymon Interceptor",
+	"version": "0.1",
+
+	"permissions": [
+		"webRequest",
+		"webRequestBlocking",
+		"<all_urls>"
+	],
+
+	"background": {
+		"html": ["redirectPage.html"],
+		"scripts": ["redirect.js"],
+		"persistent": true
+	}
+}
