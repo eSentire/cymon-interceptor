@@ -1,18 +1,22 @@
 {
-	"manifest_version": 2,
-	"name": "Cymon Interceptor",
-	"description": "Cymon Interceptor",
-	"version": "0.1",
-
-	"permissions": [
-		"webRequest",
-		"webRequestBlocking",
-		"<all_urls>"
-	],
-
-	"background": {
-		"html": ["redirectPage.html"],
-		"scripts": ["redirect.js"],
-		"persistent": true
-	}
+  "manifest_version": 2,
+  "name": "Cymon Interceptor",
+  "description": "Google Chrome extension to intercept web requests to malicious sources",
+  "version": "0.1",
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>",
+    "tabs",
+    "notifications"
+  ],
+  "page_action": {
+    "default_title": "Cymon Interceptor",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "html": ["redirectPage.html"],
+    "scripts": ["redirect.js"],
+    "persistent": true
+  }
 }
