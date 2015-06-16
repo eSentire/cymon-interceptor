@@ -1,7 +1,9 @@
 $(window).ready(function(){
-    chrome.extension.sendRequest({method: "retrieveBlockedURLs"}, function (response) {
-        for (url in response.data) {
-            $("#blocklist").append("<li>" + response.data[url] + "</li>");
-        }
+    chrome.tabs.query({currentWindow: true, active : true}, function(tabs) {
+        chrome.extension.sendRequest({method: "retrieveBlockedURLs", tabId: tabs[0].id}, function (response) {
+            for (url in response.data) {
+                $("#blocklist").append("<li>" + response.data[url] + "</li>");
+            }
+        });
     });
 });
