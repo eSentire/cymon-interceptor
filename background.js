@@ -1,38 +1,46 @@
 var imagesUrl = chrome.extension.getURL("images/");
 var redirectPageUrl = chrome.extension.getURL("redirectPage.html");
 
-//Class BlockedURLs maintains a dictionary or blocked URLs by tabId
-function BlockedURLs () {
-    this.URLs = {};
+/***************************************************************************
+*****************************Class BlockedUrls******************************
+***************************************************************************/
+
+//Class BlockedUrls maintains a dictionary or blocked Urls by tabId
+function BlockedUrls () {
+    this.Urls = {};
 }
 
-//Returns list of blocked URLs for the given tabId; returns an empty list if no URLs blocked for that tab
-BlockedURLs.prototype.getURLs = function(tabId) {
-    return (this.URLs[tabId] ? this.URLs[tabId] : []);
+//Returns list of blocked Urls for the given tabId; returns an empty list if no Urls blocked for that tab
+BlockedUrls.prototype.getUrls = function(tabId) {
+    return (this.Urls[tabId] ? this.Urls[tabId] : []);
 }
 
-//Returns count of blocked URLs for given tabId; returns 0 if no URLs blocked for that tab
-//No different than calling blockedURLs.getURLs(tabId).length, but slightly more convenient
-BlockedURLs.prototype.getURLCount = function(tabId) {
-    return (this.URLs[tabId] ? this.URLs[tabId].length : 0);
+//Returns count of blocked Urls for given tabId; returns 0 if no Urls blocked for that tab
+//No different than calling blockedUrls.getUrls(tabId).length, but slightly more convenient
+BlockedUrls.prototype.getUrlCount = function(tabId) {
+    return (this.Urls[tabId] ? this.Urls[tabId].length : 0);
 }
 
-//Adds a URL to the dictionary of blocked URLs using tabId as a key; initializes a key/value pair for each tabId as needed
-BlockedURLs.prototype.addURL = function(tabId, URL) {
-    if (!this.URLs[tabId]) {
-        this.URLs[tabId] = [];
+//Adds a url to the dictionary of blocked Urls using tabId as a key; initializes a key/value pair for each tabId as needed
+BlockedUrls.prototype.addUrl = function(tabId, url) {
+    if (!this.Urls[tabId]) {
+        this.Urls[tabId] = [];
     }
-    this.URLs[tabId].push(URL);
+    this.Urls[tabId].push(url);
 }
 
 //Removes all entries for a tabId from the dictionary; called whenever a tab is closed.
-BlockedURLs.prototype.removeTab = function(tabId) {
-    delete this.URLs[tabId];
+BlockedUrls.prototype.dropEntries = function(tabId) {
+    delete this.Urls[tabId];
 }
+
+/***************************************************************************
+*****************************Helper Functions*******************************
+***************************************************************************/
 
 //Updates the count displayed by the browserAction icon in the top bar of Chrome
 function updateBadge(tabId) {
-    var count = blockedURLs.getURLCount(tabId);
+    var count = blockedUrls.getUrlCount(tabId);
     if (count) {
         chrome.browserAction.setBadgeText({"text": count.toString()});
     } else {
@@ -40,9 +48,18 @@ function updateBadge(tabId) {
     }
 }
 
+function searchWhiteList(url) {
+    for (domain in whitelist){
+        if (url.indexOf(domain) != -1) {
+            return true;
+		}
+    }
+    return false;
+}
+
 //Function stub: replace with actual Cymon datafeed in future
 function getCymonResponse (url) {
-	var blacklist = ["maps.google.com","maps.google.ca"];
+	var blacklist = ["maps.google.com", "en.wikipedia.org"];
 	for (var i=0; i < blacklist.length; i++) {
 		if (url.indexOf(blacklist[i]) != -1) {
             return true;
@@ -54,22 +71,41 @@ function getCymonResponse (url) {
 
 //Callback function to be executed when a web request is intercepted
 function interceptCallback (details) {
-    if (getCymonResponse(details.url)) {
-        blockedURLs.addURL(details.tabId, details.url);
+    //Things to do on page load; only for web requests sent directly from browser window
+    if (details.type == "main_frame") {
+        if (details.url != redirectPageUrl) {
+            blockedUrls.dropEntries(details.tabId);
+        }
+        updateBadge(details.tabId);
+        delete tabsNotified[details.tabId];
+    }
+
+    //To be executed if the source is malicioius
+    if (!searchWhiteList(details.url) && getCymonResponse(details.url)) {
+        blockedUrls.addUrl(details.tabId, details.url);
         if (details.type == "main_frame") { //Call was made from browser; redirect user to safe Cymon page
             return {redirectUrl: redirectPageUrl};
         } else { //Call was made within page; block request
-            chrome.notifications.create(NotificationOptions = { //Basic description: "this blocked some stuff"
+            if (!tabsNotified[details.tabId]) {
+                chrome.notifications.create(NotificationOptions = { //Basic description: "this blocked some stuff"
                     type: "basic",
                     title: "Malicious request blocked",
                     iconUrl: imagesUrl + "cymon-icon.png",
                     message: "A web request on this page was deemed malicious by Cymon and has been blocked"
-            });
+                }, function () {
+                    tabsNotified[details.tabId] = true;
+                });
+            }
             updateBadge(details.tabId);
             return {cancel: true};
         }
     }
+    return {cancel: false};
 }
+
+/***************************************************************************
+***************************Add Event Listeners******************************
+***************************************************************************/
 
 //Listens for tab change to update badge text
 chrome.tabs.onActivated.addListener(function(activeInfo){
@@ -78,15 +114,25 @@ chrome.tabs.onActivated.addListener(function(activeInfo){
 
 //Listens for whenever a tab is closed
 chrome.tabs.onRemoved.addListener(function(tabId) {
-    blockedURLs.removeTab(tabId);
+    blockedUrls.dropEntries(tabId);
 });
 
-//Listens for request from popup.html to retrieve list of URLs
+//Listens for request from popup.js
 chrome.extension.onRequest.addListener(function (request, sender, response) {
-    if (request.method == "retrieveBlockedURLs") {
-        chrome.tabs.getCurrent(function() {
-            response({data: blockedURLs.getURLs(request.tabId)});
+    if (request.method == "retrieveBlockedUrls") { //Retrieves the list of all Urls blocked by Cymon
+        chrome.tabs.getCurrent(function () {
+            response({data: blockedUrls.getUrls(request.tabId)});
         })
+    } else if (request.method == "updateWhitelist") { //Adds an entry to the user's local whitelist
+        var domain = new URL(request.url).hostname;
+        whitelist[domain] = true;
+        chrome.storage.local.set(whitelist);
+        response({success: true});
+    } else if (request.method == "clearWhitelist") { //Clears the whitelist
+        whitelist = {};
+        chrome.storage.local.clear(function(){ //TODO: There has to be some catch for a fail state in here
+            response({success: true});
+        });
     } else {
         response({});
     }
@@ -99,4 +145,19 @@ chrome.webRequest.onBeforeRequest.addListener(
 	["blocking"]
 );
 
-blockedURLs = new BlockedURLs();
+/***************************************************************************
+*********************************"Main"*************************************
+***************************************************************************/
+
+//Keeps track of all blocked Urls for a page
+var blockedUrls = new BlockedUrls();
+
+//Keeps track of tabs that have been notified of malicious activity
+var tabsNotified = {}
+
+var whitelist = [];
+
+//Load whitelist from local storage
+chrome.storage.local.get(function(items) {
+    whitelist = items;
+});

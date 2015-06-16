@@ -14,7 +14,8 @@
     "webRequestBlocking",
     "<all_urls>",
     "tabs",
-    "notifications"
+    "notifications",
+    "storage"
   ],
 
   "browser_action": {
