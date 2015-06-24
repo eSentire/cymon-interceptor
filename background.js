@@ -117,28 +117,33 @@ chrome.tabs.onRemoved.addListener(function(tabId) {
     blockedUrls.dropEntries(tabId);
 });
 
-//Listens for request from popup.js
+//Listens for requests from popup.js
 chrome.extension.onRequest.addListener(function (request, sender, response) {
-    if (request.method == "retrieveBlockedUrls") { //Retrieves the list of all Urls blocked by Cymon
-        chrome.tabs.getCurrent(function () {
-            response({data: blockedUrls.getUrls(request.tabId)});
-        })
-    } else if (request.method == "updateWhitelist") { //Adds an entry to the user's local whitelist
-        var domain = new URL(request.url).hostname;
-        whitelist[domain] = true;
-        chrome.storage.local.set(whitelist);
-        response({success: true});
-    } else if (request.method == "clearWhitelist") { //Clears the whitelist
-        whitelist = {};
-        chrome.storage.local.clear(function(){ //TODO: There has to be some catch for a fail state in here
+    switch (request.method) {
+        case "retrieveBlockedUrls": //Retrieves the list of all URLs blocked by Cymon
+            chrome.tabs.getCurrent(function () {
+                response({data: blockedUrls.getUrls(request.tabId)});
+            });
+            break;
+        case "addToWhitelist": //Adds an entry to the user's local whitelist
+            var domain = new URL(request.url).hostname;
+            whitelist[domain] = true;
+            chrome.storage.local.set(whitelist);
             response({success: true});
-        });
-    } else {
-        response({});
+            break;
+        case "clearWhitelist": //Clears the whitelist
+            whitelist = {};
+            chrome.storage.local.clear(function(){ //TODO: There has to be some catch for a fail state in here
+                response({success: true});
+            });
+            break;
+        default:
+            response({});
+            break;
     }
 });
 
-//Listens for web requests
+//Listens for web requests; this is where the magic happens!
 chrome.webRequest.onBeforeRequest.addListener(
     interceptCallback,
 	{urls: ["<all_urls>"]},
@@ -149,12 +154,13 @@ chrome.webRequest.onBeforeRequest.addListener(
 *********************************"Main"*************************************
 ***************************************************************************/
 
-//Keeps track of all blocked Urls for a page
+//Singleton, keeps track of all blocked Urls for a page
 var blockedUrls = new BlockedUrls();
 
 //Keeps track of tabs that have been notified of malicious activity
 var tabsNotified = {}
 
+//List of domains whitelisted by the user
 var whitelist = [];
 
 //Load whitelist from local storage

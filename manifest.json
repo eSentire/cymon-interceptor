@@ -28,7 +28,7 @@
   },
 
   "background": {
-    "html": ["redirectPage.html"],
+    "html": ["background.html"],
     "scripts": ["jquery-1.11.3.min.js", "background.js"],
     "persistent": true
   }
