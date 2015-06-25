@@ -24,12 +24,11 @@
       "38": "images/cymon-icon-38.png"
     },
     "default_title": "Cymon Interceptor",
-    "default_popup": "popup.html"
+    "default_popup": "popup/popup.html"
   },
 
   "background": {
-    "html": ["background.html"],
-    "scripts": ["jquery-1.11.3.min.js", "background.js"],
+    "page": "background/background.html",
     "persistent": true
   }
 }

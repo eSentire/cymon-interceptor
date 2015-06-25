@@ -1,5 +1,9 @@
-var imagesUrl = chrome.extension.getURL("images/");
-var redirectPageUrl = chrome.extension.getURL("background.html");
+var imagesUrl = chrome.extension.getURL("../images/");
+var redirectPageUrl = chrome.extension.getURL("../redirect/redirect.html");
+
+function Interceptor () {
+    
+}
 
 /***************************************************************************
 *****************************Class BlockedUrls******************************
