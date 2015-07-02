@@ -1,6 +1,6 @@
 //Populates each list item
 function loadBlockedDomains(tabId) {
-    var blockedDomains = chrome.extension.getBackgroundPage().blocklists[tabId].get();
+    var blockedDomains = chrome.extension.getBackgroundPage().tabs[tabId].getBlocklist();
     if (blockedDomains.length > 0) {
         $("#description").html("\
             <h2>The following resources on this page have been blocked:</h2>\
@@ -13,6 +13,7 @@ function loadBlockedDomains(tabId) {
                 var button = this;
                 if (confirm("Are you sure you want to whitelist " + domain + "? This will allow all web requests to this domain, which Cymon believes is malicious.")) {
                     chrome.extension.getBackgroundPage().whitelist.add(domain);
+                    chrome.extension.getBackgroundPage().tabs[tabId].removeFromBlocklist(domain);
                     button.disabled = true;
                     button.innerHTML = "Whitelisted";
                 }
