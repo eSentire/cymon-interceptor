@@ -4,6 +4,7 @@
 function Whitelist() {
     var _whitelist = [];
 
+    //To be used at the start of each session to load data from storage
     this.init = function(storage) {
         if (storage) {
             _whitelist = storage;
@@ -34,81 +35,78 @@ function Whitelist() {
 ***************************************************************************/
 
 function Blocklist() {
-    this.blocklist = []
+    var _blocklist = []
+
+    this.get = function() {
+        return _blocklist;
+    }
+
+    this.add = function(domain) {
+        if (_blocklist.indexOf(domain) == -1) {
+            _blocklist.push(domain);
+        }
+    };
+
+    this.remove = function(domain) {
+        var index = this._blocklist.indexOf(domain);
+        if (index != -1) {
+            _blocklist.splice(index);
+        }
+    };
+
+    this.clear = function() {
+        _blocklist = [];
+    };
 }
-
-//Returns list of blocked domains
-Blocklist.prototype.get = function() {
-    return this.blocklist;
-};
-
-//Adds a domain to the list of blocked domains
-Blocklist.prototype.add = function(domain) {
-    if (this.blocklist.indexOf(domain) == -1) {
-        this.blocklist.push(domain);
-    }
-};
-
-Blocklist.prototype.remove = function(domain) {
-    var index = this.blocklist.indexOf(domain);
-    if (index != -1) {
-        this.blocklist.splice(index);
-    }
-};
-
-Blocklist.prototype.clear = function() {
-    this.blocklist = [];
-};
-
 
 /***************************************************************************
 *****************************Class WrapperTab*******************************
 ***************************************************************************/
 function WrapperTab(tabId) {
-    this.tabId = tabId;
-    this.notified = false;
-    this.blocklist = new Blocklist()
+    _tabId = tabId;
+    _notified = false;
+    _blocklist = new Blocklist()
+
+    this.getId = function() {
+        return _tabId;
+    };
+
+    this.isNotified = function() {
+        return _notified;
+    };
+
+    this.setNotified = function(notified) {
+        _notified = notified;
+    };
+
+    this.getBlocklist = function () {
+        return _blocklist.get();
+    };
+
+    this.addToBlocklist = function (domain) {
+        _blocklist.add(domain);
+        this.updateBadge();
+    };
+
+    this.removeFromBlocklist = function (domain) {
+        _blocklist.remove(domain);
+        this.updateBadge();
+    };
+
+    this.clearBlocklist = function () {
+        _blocklist.clear();
+        this.updateBadge();
+    };
+
+    this.updateBadge = function() {
+        var count = _blocklist.get().length;
+        if (count) {
+            chrome.browserAction.setBadgeText({"text": count.toString()});
+        } else {
+            chrome.browserAction.setBadgeText({"text": ""});
+        }
+    };
 }
-
-WrapperTab.prototype.getId = function() {
-    return this.tabId;
-};
-
-WrapperTab.prototype.isNotified = function() {
-    return this.notified;
-};
-
-WrapperTab.prototype.setNotified = function(notified) {
-    this.notified = notified;
-};
-
-WrapperTab.prototype.getBlocklist = function () {
-    return this.blocklist.get();
-};
-
-WrapperTab.prototype.addToBlocklist = function (domain) {
-    this.blocklist.add(domain);
-    this.updateBadge();
-};
-
-WrapperTab.prototype.removeFromBlocklist = function (domain) {
-    this.blocklist.remove(domain);
-    this.updateBadge();
-};
-
-WrapperTab.prototype.clearBlocklist = function () {
-    this.blocklist.clear();
-    this.updateBadge();
-};
-
-WrapperTab.prototype.updateBadge = function() {
-    var count = this.blocklist.get().length;
-    if (count) {
-        chrome.browserAction.setBadgeText({"text": count.toString()});
-    } else {
-        chrome.browserAction.setBadgeText({"text": ""});
-    }
-};
 
 /***************************************************************************
 ****************************Helper Functions********************************
