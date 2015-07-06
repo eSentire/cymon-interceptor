@@ -2,60 +2,62 @@
 ******************************Class Whitelist*******************************
 ***************************************************************************/
 function Whitelist() {
-    this._whitelist = [];
+    var _whitelist = [];
 
-    //Load whitelist from local storage
-    chrome.storage.local.get(function (items) {
-        this._whitelist = items["whitelist"];
-    });
-}
-
-Whitelist.prototype.add = function (domain) {
-    if (this._whitelist.indexOf(domain) == -1) {
-        this._whitelist.push("*://" + domain + "/*");
-        chrome.storage.local.set({"whitelist": this._whitelist});
-        initListener();
+    this.init = function(storage) {
+        if (storage) {
+            _whitelist = storage;
+        }
     }
-};
 
-Whitelist.prototype.clear = function () {
-    this._whitelist = [];
-    chrome.storage.local.remove("whitelist");
-};
+    this.add = function(domain) {
+        var domain_pattern = "*://" + domain + "/*";
+        if (_whitelist.indexOf(domain_pattern) == -1) {
+            _whitelist.push(domain_pattern);
+            chrome.storage.local.set({"whitelist": _whitelist});
+        }
+    }
 
-Whitelist.prototype.get = function () {
-    return this._whitelist;
-};
+    this.get = function(){
+        return _whitelist;
+    }
+
+    this.clear = function () {
+        _whitelist = [];
+        chrome.storage.local.set({"whitelist": []});
+    }
+
+}
 
 /***************************************************************************
 ******************************Class Blocklist*******************************
 ***************************************************************************/
 
 function Blocklist() {
-    this._blocklist = []
+    this.blocklist = []
 }
 
 //Returns list of blocked domains
 Blocklist.prototype.get = function() {
-    return this._blocklist;
+    return this.blocklist;
 };
 
 //Adds a domain to the list of blocked domains
 Blocklist.prototype.add = function(domain) {
-    if (this._blocklist.indexOf(domain) == -1) {
-        this._blocklist.push(domain);
+    if (this.blocklist.indexOf(domain) == -1) {
+        this.blocklist.push(domain);
     }
 };
 
 Blocklist.prototype.remove = function(domain) {
-    var index = this._blocklist.indexOf(domain);
+    var index = this.blocklist.indexOf(domain);
     if (index != -1) {
-        this._blocklist.splice(index);
+        this.blocklist.splice(index);
     }
 };
 
 Blocklist.prototype.clear = function() {
-    this._blocklist = [];
+    this.blocklist = [];
 };
 
 
@@ -63,55 +65,55 @@ Blocklist.prototype.clear = function() {
 *****************************Class WrapperTab*******************************
 ***************************************************************************/
 function WrapperTab(tabId) {
-    this._tabId = tabId;
-    this._notified = false;
-    this._blocklist = new Blocklist()
+    this.tabId = tabId;
+    this.notified = false;
+    this.blocklist = new Blocklist()
 }
 
 WrapperTab.prototype.getId = function() {
-    return this._tabId;
-}
+    return this.tabId;
+};
 
 WrapperTab.prototype.isNotified = function() {
-    return this._notified;
-}
+    return this.notified;
+};
 
 WrapperTab.prototype.setNotified = function(notified) {
-    this._notified = notified;
-}
+    this.notified = notified;
+};
 
 WrapperTab.prototype.getBlocklist = function () {
-    return this._blocklist.get();
-}
+    return this.blocklist.get();
+};
 
 WrapperTab.prototype.addToBlocklist = function (domain) {
-    this._blocklist.add(domain);
+    this.blocklist.add(domain);
     this.updateBadge();
-}
+};
 
 WrapperTab.prototype.removeFromBlocklist = function (domain) {
-    this._blocklist.remove(domain);
+    this.blocklist.remove(domain);
     this.updateBadge();
-}
+};
 
 WrapperTab.prototype.clearBlocklist = function () {
-    this._blocklist.clear();
+    this.blocklist.clear();
     this.updateBadge();
-}
+};
 
 WrapperTab.prototype.updateBadge = function() {
-    var count = this._blocklist.get().length;
+    var count = this.blocklist.get().length;
     if (count) {
         chrome.browserAction.setBadgeText({"text": count.toString()});
     } else {
         chrome.browserAction.setBadgeText({"text": ""});
     }
-}
+};
 
 /***************************************************************************
 ****************************Helper Functions********************************
 ***************************************************************************/
-//Function stub: replace with actual Cymon datafeed in future
+//Function stub: replace with actual Cymon data in future
 function getCymonInfo() {
     return $(["*://maps.google.com/*", "*://en.wikipedia.org/*"]).not(whitelist.get()).get();
 };
@@ -125,61 +127,78 @@ function initListener() {
     );
 }
 
-//Listens for web requests; this is where the magic happens!
+//Listens for web requests; this is where the magic happens
 function interceptRequest(details) {
-    if (tabs[details.tabId]) {
-        var tab = tabs[details.tabId];
-        var domain = new URL(details.url).hostname;
+    var tab = cymonTabs[details.tabId];
 
-        tab.addToBlocklist(domain);
-        if (details.type == "main_frame") { //Call was made from browser; redirect user to safe Cymon page
-            return {redirectUrl: chrome.extension.getURL("/redirect/redirect.html")};
-        } else { //Call was made within page; block request
-            if (!tab.isNotified()) {
-                chrome.notifications.create(NotificationOptions = { //Basic description: "this blocked some stuff"
-                    type: "basic",
-                    title: "Malicious request blocked",
-                    iconUrl: "../images/cymon-icon.png",
-                    message: "A web request on this page was deemed malicious by Cymon and has been blocked"
-                });
-                tab.setNotified(true);
-            }
-            tab.updateBadge();
-            return {cancel: true};
-        }
+    if (tab) {
+        tab.addToBlocklist(new URL(details.url).hostname);
     }
-    return {cancel: false};
+    if (details.type == "main_frame") { //Call was made from browser; redirect user to safe Cymon page
+        return {redirectUrl: chrome.extension.getURL("/redirect/redirect.html")};
+    } else { //Call was made within page; block request
+        if ( !tab.isNotified()) {
+            chrome.notifications.create(NotificationOptions = { //Basic description: "this blocked some stuff"
+                type: "basic",
+                title: "Malicious request blocked",
+                iconUrl: "../images/cymon-icon.png",
+                message: "A web request on this page was deemed malicious by Cymon and has been blocked"
+            });
+            tab.setNotified(true);
+        }
+        tab.updateBadge();
+        return {cancel: true};
+    }
 }
 
 /***************************************************************************
 *********************************"Main"*************************************
 ***************************************************************************/
 var whitelist = new Whitelist();
-var tabs = {}
+var cymonTabs = {}
 
-chrome.tabs.onActivated.addListener(function(activeInfo){ //TODO: This may not be needed in a real environment
-    if (!(activeInfo.tabId in tabs)) {
-        tabs[activeInfo.tabId] = new WrapperTab();
+//Load whitelist from local storage
+chrome.storage.local.get(function (items) {
+    if (items["whitelist"]) {
+        whitelist.init(items["whitelist"]);
     }
-    tabs[activeInfo.tabId].updateBadge();
+    initListener();
 });
 
+//Add tab wrapper when tab is opened
 chrome.tabs.onCreated.addListener(function(tab) {
-    tabs[tab.id] = new WrapperTab(tab.id);
-    tabs[tab.id].updateBadge();
+    cymonTabs[tab.id] = new WrapperTab(tab.id);
+    cymonTabs[tab.id].updateBadge();
 });
 
+//Remove tab wrapper when tab is closed
 chrome.tabs.onRemoved.addListener(function(tabId) {
-    if (tabId in tabs) {
-        delete tabs[tabId];
+    if (tabId in cymonTabs) {
+        delete cymonTabs[tabId];
     }
 });
 
-chrome.tabs.onUpdated.addListener(function(tab, changeInfo) {
-    if (changeInfo.url) {
-        tabs[tab].clearBlocklist();
-        tabs[tab].updateBadge();
+//Update the badge whenever the user changes tabs
+chrome.tabs.onActivated.addListener(function(activeInfo){
+    //Just in case for some reason this tab hasn't been initialized
+    if (!(activeInfo.tabId in cymonTabs)) {
+        cymonTabs[activeInfo.tabId] = new WrapperTab();
+    }
+    cymonTabs[activeInfo.tabId].updateBadge();
+});
+
+//Refresh the tab info whenever the user goes to a new page
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo) {
+    if (changeInfo.url && tabId in cymonTabs) {
+        cymonTabs[tabId].clearBlocklist();
+        cymonTabs[tabId].updateBadge();
     }
 });
 
-initListener();
+//Creates wrappers for all opened tabs when the extension is initialized; only really relevant if the extension is loaded mid-session
+chrome.tabs.query({}, function(tabs){
+    for (var itab in tabs) {
+        tab = tabs[itab];
+        cymonTabs[tab.id] = new WrapperTab(tab.id);
+    }
+});
