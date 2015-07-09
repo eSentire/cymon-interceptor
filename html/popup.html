@@ -1,37 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" ng-app="cymonPopup" ng-csp>
     <head>
+        <meta charset="utf-8">
+        <title>Cymon Interceptor Popup</title>
+        <link rel="stylesheet" type="text/css" href="/css/angular-csp.css">
         <script type="text/javascript" src="/js/plugins/jquery-1.11.3.min.js"></script>
+        <script type="text/javascript" src="/js/plugins/angular.min.js"></script>
         <script type="text/javascript" src="/js/popup.js"></script>
     </head>
     <body>
-        <section id="description">
-            <p>No malicious activity detected on this page.</p>
-        </section>
-        <button id="clearWhitelist">Clear Whitelist</button>
-        <span id="response">&nbsp;</span>
+        <h1>Cymon Interceptor</h1>
+        <div ng-controller="BlocklistController">
+            <div ng-hide="domains.length">
+                <p>No malicious activity detected on this page.</p>
+            </div>
+            <div ng-show="domains.length">
+                <p>The following domains have been blocked by Cymon Interceptor:</p>
+                <table>
+                    <tbody>
+                        <tr ng-repeat="domain in domains">
+                            <td>{{domain.name}}</td>
+                            <!--ng-click="whitelistDomain({{domain.name}})"-->
+                            <td><button ng-controller="WhitelistButtonController" ng-disabled="!active" ng-click="whitelistDomain(domain)">{{buttonText}}</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button ng-controller="ClearWhitelistButtonController" ng-disabled="!active" ng-click="clearWhitelist()">{{buttonText}}</button>
+        </div>
     </body>
 </html>
-
-
-<!--<!DOCTYPE html>-->
-<!--<html ng-app="BrowserPopup" ng-csp>-->
-    <!--<head>-->
-        <!--<script type="text/javascript" src="/js/plugins/jquery-1.11.3.min.js"></script>-->
-        <!--<script type="text/javascript" src="/js/plugins/angular.min.js"></script>-->
-        <!--<script type="text/javascript" src="/js/popup.js"></script>-->
-    <!--</head>-->
-    <!--<body>-->
-        <!--<header><h1>Cymon Interceptor</h1></header>-->
-        <!--<div ng-controller="Blocklist">-->
-            <!--<table>-->
-                <!--<tr ng-hide="{{Blocklist.length}}"><td>No malicious activity detected on this page.</td></tr>-->
-                <!--<tr ng-show="{{Blocklist.length}}" ng-repeat="item in Blocklist">-->
-                    <!--<td>{{item}}</td><td><button ng-click="Blocklist.whitelist({{$index}})">Whitelist</button></td>-->
-                <!--</tr>-->
-            <!--</table>-->
-        <!--</div>-->
-        <!--<button id="clearWhitelist">Clear Whitelist</button>-->
-        <!--<span id="response">&nbsp;</span>-->
-    <!--</body>-->
-<!--</html>-->
