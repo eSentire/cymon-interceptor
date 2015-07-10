@@ -1,5 +1,5 @@
 (function() {
-    var app = angular.module('cymonPopup', [/*Dependencies*/]);
+    var app = angular.module('cymonPopup', []);
 
     app.service('blocklistService', function() {
         this.getBlocklist = function (callback) {
@@ -26,31 +26,6 @@
         }
     });
 
-    app.controller("ClearWhitelistButtonController", function($scope) {
-        $scope.buttonText = "Clear Whitelist";
-        $scope.active = chrome.extension.getBackgroundPage().whitelist.get().length > 0;
-
-        $scope.setEnabled=function(enabled) {
-            switch(enabled) {
-                case true:
-                    $scope.buttonText = "Clear Whitelist";
-                    $scope.active = true;
-                    break;
-                case false:
-                    $scope.buttonText = "Whitelist Empty";
-                    $scope.active = false;
-                    break
-            }
-        };
-
-        $scope.clearWhitelist = function () {
-            chrome.extension.getBackgroundPage().whitelist.clear();
-            chrome.extension.getBackgroundPage().initListener();
-
-            $scope.setEnabled(false);
-        }
-    });
-
     app.controller('WhitelistButtonController', function($scope, blocklistService) {
 
         $scope.buttonText = "Whitelist";
@@ -70,11 +45,13 @@
         }
 
         $scope.whitelistDomain = function (domain) {
-            chrome.extension.getBackgroundPage().whitelist.add(domain.name);
-            chrome.extension.getBackgroundPage().initListener();
-            blocklistService.removeFromBlocklist(domain);
+            if (confirm("Are you sure you want to whitelist " + domain.name + "? This domain could be potentially harmful to your system.")) {
+                chrome.extension.getBackgroundPage().whitelist.add(domain.name);
+                chrome.extension.getBackgroundPage().initListener();
+                blocklistService.removeFromBlocklist(domain);
 
-            $scope.setEnabled(false);
+                $scope.setEnabled(false);
+            }
         };
     });
 

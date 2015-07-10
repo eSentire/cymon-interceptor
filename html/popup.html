@@ -20,13 +20,11 @@
                     <tbody>
                         <tr ng-repeat="domain in domains">
                             <td>{{domain.name}}</td>
-                            <!--ng-click="whitelistDomain({{domain.name}})"-->
                             <td><button ng-controller="WhitelistButtonController" ng-disabled="!active" ng-click="whitelistDomain(domain)">{{buttonText}}</button></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <button ng-controller="ClearWhitelistButtonController" ng-disabled="!active" ng-click="clearWhitelist()">{{buttonText}}</button>
         </div>
     </body>
 </html>

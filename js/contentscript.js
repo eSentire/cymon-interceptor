@@ -15,7 +15,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         case "removeFromBlocklist":
             var index = blocklist.indexOf(request.domain);
             if (index != -1) {
-                blocklist.splice(index);
+                blocklist.splice(index,1);
                 sendResponse({ success: true, blocklist: blocklist });
             } else {
                 sendResponse({ success: false, blocklist: blocklist });

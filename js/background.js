@@ -17,7 +17,16 @@ Whitelist.prototype.add = function(domain) {
     var domain_pattern = "*://" + domain + "/*";
     if (this._whitelist.indexOf(domain_pattern) == -1) {
         this._whitelist.push(domain_pattern);
-        chrome.storage.local.set({ "whitelist": this._whitelist });
+        chrome.storage.local.set({ whitelist: this._whitelist });
+    }
+};
+
+
+Whitelist.prototype.remove = function(domain) {
+    var index = this._whitelist.indexOf(domain)
+    if (index != -1) {
+        this._whitelist.splice(index, 1);
+        chrome.storage.local.set({ whitelist: this._whitelist });
     }
 };
 
@@ -27,7 +36,7 @@ Whitelist.prototype.get = function(){
 
 Whitelist.prototype.clear = function () {
     this._whitelist = [];
-    chrome.storage.local.set({ "whitelist": [] });
+    chrome.storage.local.set({ whitelist: [] });
 };
 
 /***************************************************************************
