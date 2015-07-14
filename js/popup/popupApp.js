@@ -29,9 +29,11 @@
         var list = this;
         list.domains = [];
 
-        blocklistService.getBlocklist(function (blocklist) {
-            list.domains = blocklist;
-            $scope.$apply();
+        blocklistService.getBlocklist(function (response) {
+            if (response && response.success) {
+                list.domains = response.blocklist;
+                $scope.$apply();
+            }
         });
     }]);
 })();

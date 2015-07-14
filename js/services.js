@@ -7,11 +7,7 @@
                 chrome.tabs.sendMessage(
                     tabs[0].id,
                     {action: "getBlocklist"},
-                    function (response) {
-                        if (response && response.success) {
-                            callback(response.blocklist);
-                        }
-                    }
+                    callback
                 );
             });
         };
@@ -64,7 +60,11 @@
         };
 
         this.getWhitelist = function () {
-            return chrome.extension.getBackgroundPage().whitelist.get();
+            var whitelist = chrome.extension.getBackgroundPage().whitelist.get();
+            for (var index in whitelist) {
+                whitelist[index] = whitelist[index].replace("*://", "").replace("/*", "");
+            }
+            return whitelist;
         };
     });
 })();

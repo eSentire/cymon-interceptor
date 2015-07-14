@@ -1,15 +1,11 @@
 (function () {
     var app = angular.module("options", ['services']);
 
-    app.controller("WhitelistController", function() {
-        this.domains = chrome.extension.getBackgroundPage().whitelist.get();
-        var ctx=this;
-        $.each(ctx.domains, function(index, value){
-           ctx.domains[index] = value.replace("*://", "").replace("/*", "");
-        });
-    });
+    app.controller("WhitelistController", ['whitelistService', function(whitelistService) {
+        this.domains = whitelistService.getWhitelist();
+    }]);
 
-    app.controller("RemoveFromWhitelistButtonController", function() {
+    app.controller("RemoveFromWhitelistButtonController", ['whitelistService', function(whitelistService) {
         this.setEnabled=function(enabled) {
             switch(enabled) {
                 case true:
@@ -27,15 +23,13 @@
 
         this.click = function (domain) {
             if (confirm("Are you sure you want to remove this domain from your whitelist?")) {
-                chrome.extension.getBackgroundPage().whitelist.remove(domain);
-                chrome.extension.getBackgroundPage().initListener();
-
+                whitelistService.removeFromWhitelist(domain);
                 this.setEnabled(false);
             }
         }
-    });
+    }]);
 
-    app.controller("ClearWhitelistButtonController", function() {
+    app.controller("ClearWhitelistButtonController", ['whitelistService', function(whitelistService) {
         this.setEnabled=function(enabled) {
             switch(enabled) {
                 case true:
@@ -53,12 +47,10 @@
 
         this.click = function () {
             if (confirm("Are you sure you want to clear your whitelist? This action cannot be undone!")) {
-                chrome.extension.getBackgroundPage().whitelist.clear();
-                chrome.extension.getBackgroundPage().initListener();
+                whitelistService.clearWhitelist();
 
                 this.setEnabled(false);
             }
         }
-    });
-
+    }]);
 })();
