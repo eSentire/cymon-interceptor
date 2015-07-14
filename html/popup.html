@@ -1,30 +1,34 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="cymonPopup" ng-csp>
+<html lang="en" ng-app="popup" ng-csp>
     <head>
         <meta charset="utf-8">
         <title>Cymon Interceptor Popup</title>
         <link rel="stylesheet" type="text/css" href="/css/angular-csp.css">
+        <link rel="stylesheet" type="text/css" href="/css/global.css">
         <script type="text/javascript" src="/js/plugins/jquery-1.11.3.min.js"></script>
         <script type="text/javascript" src="/js/plugins/angular.min.js"></script>
-        <script type="text/javascript" src="/js/popup.js"></script>
+        <script type="text/javascript" src="/js/services.js"></script>
+        <script type="text/javascript" src="/js/popup/popupApp.js"></script>
     </head>
     <body>
-        <h1>Cymon Interceptor</h1>
-        <div ng-controller="BlocklistController">
-            <div ng-hide="domains.length">
-                <p>No malicious activity detected on this page.</p>
+        <main>
+            <h1>Cymon Interceptor</h1>
+            <div ng-controller="BlocklistController as blocklistCtrl">
+                <div ng-hide="blocklistCtrl.domains.length">
+                    <p>No malicious activity detected on this page.</p>
+                </div>
+                <div ng-show="blocklistCtrl.domains.length">
+                    <p>The following domains have been blocked by Cymon Interceptor:</p>
+                    <table>
+                        <tbody>
+                            <tr ng-repeat="domain in blocklistCtrl.domains" ng-class-odd="'odd'" ng-class-even="'even'">
+                                <td>{{domain}}</td>
+                                <td><button ng-controller="AddToWhitelistButtonController as buttonCtrl" ng-disabled="!buttonCtrl.active" ng-click="buttonCtrl.click(domain)">{{buttonCtrl.buttonText}}</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div ng-show="domains.length">
-                <p>The following domains have been blocked by Cymon Interceptor:</p>
-                <table>
-                    <tbody>
-                        <tr ng-repeat="domain in domains">
-                            <td>{{domain.name}}</td>
-                            <td><button ng-controller="WhitelistButtonController" ng-disabled="!active" ng-click="whitelistDomain(domain)">{{buttonText}}</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        </main>
     </body>
 </html>

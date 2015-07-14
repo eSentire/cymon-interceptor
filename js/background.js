@@ -18,6 +18,9 @@ Whitelist.prototype.add = function(domain) {
     if (this._whitelist.indexOf(domain_pattern) == -1) {
         this._whitelist.push(domain_pattern);
         chrome.storage.local.set({ whitelist: this._whitelist });
+        return true;
+    } else {
+        return false;
     }
 };
 
@@ -27,6 +30,9 @@ Whitelist.prototype.remove = function(domain) {
     if (index != -1) {
         this._whitelist.splice(index, 1);
         chrome.storage.local.set({ whitelist: this._whitelist });
+        return true;
+    } else {
+        return false;
     }
 };
 
@@ -37,6 +43,7 @@ Whitelist.prototype.get = function(){
 Whitelist.prototype.clear = function () {
     this._whitelist = [];
     chrome.storage.local.set({ whitelist: [] });
+    return true;
 };
 
 /***************************************************************************
@@ -44,7 +51,7 @@ Whitelist.prototype.clear = function () {
 ***************************************************************************/
 //Function stub: replace with actual Cymon data in future
 function getCymonInfo() {
-    return $(["*://maps.google.com/*", "*://en.wikipedia.org/*"]).not(whitelist.get()).get();
+    return $(["*://maps.google.com/*", "*://en.wikipedia.org/*", "*://apis.google.com/*"]).not(whitelist.get()).get();
 };
 
 function listenerCallback(details) {

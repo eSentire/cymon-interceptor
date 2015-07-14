@@ -1,0 +1,52 @@
+body {
+    font-family: Calibri, Arial, sans-serif;
+    font-size: 1em;
+}
+
+header {
+    text-align: center;
+}
+
+table {
+    text-align: left;
+}
+
+th, td {
+    padding: 3px;
+}
+
+thead th {
+    border: 1px transparent;
+    border-radius: 3px 3px 0 0;
+}
+
+tfoot th {
+    border: 1px transparent;
+    border-radius:  0 0 3px 3px;
+}
+
+tr.even {
+    background-color: #CFCFCF;
+}
+
+tr.odd {
+    background-color: #E6E6E6;
+}
+
+th {
+    background-color: #a0201d;
+    color: #FFFFFF;
+    font-size: 1.1em;
+}
+
+button {
+    background-color: #FFFFFF;
+    border: 1px solid;
+    border-color: #CFCFCF;
+    border-radius: 3px;
+    padding: 5px;
+}
+
+button:disabled {
+    background-color: #EEEEEE;
+}
