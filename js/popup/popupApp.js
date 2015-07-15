@@ -1,7 +1,7 @@
 (function() {
     var app = angular.module('popup', ['services']);
 
-    app.controller('AddToWhitelistButtonController',['whitelistService', function (whitelistService) {
+    app.controller('AddToWhitelistButtonController',['whitelistService', 'blocklistService', function (whitelistService, blocklistService) {
         this.setEnabled = function (enabled) {
             switch (enabled) {
                 case true:
@@ -19,8 +19,12 @@
 
         this.click = function (domain) {
             if (confirm("Are you sure you want to whitelist " + domain + "? This domain could be potentially harmful to your system.")) {
-                whitelistService.addToWhitelist(domain);
-                this.setEnabled(false);
+                if (whitelistService.addToWhitelist(domain)) {
+                    blocklistService.removeFromBlocklist(domain);
+                    this.setEnabled(false);
+                } else {
+                    alert("Error: " + domain + " is already in your whitelist")
+                }
             }
         };
     }]);

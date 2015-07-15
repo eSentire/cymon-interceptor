@@ -3,10 +3,10 @@
     <head>
         <meta charset="utf-8">
         <title>Cymon Interceptor Popup</title>
-        <link rel="stylesheet" type="text/css" href="/css/angular-csp.css">
+        <link rel="stylesheet" type="text/css" href="/lib/angular-csp.css">
         <link rel="stylesheet" type="text/css" href="/css/global.css">
-        <script type="text/javascript" src="/js/plugins/jquery-1.11.3.min.js"></script>
-        <script type="text/javascript" src="/js/plugins/angular.min.js"></script>
+        <script type="text/javascript" src="/lib/jquery-1.11.3.min.js"></script>
+        <script type="text/javascript" src="/lib/angular.min.js"></script>
         <script type="text/javascript" src="/js/services.js"></script>
         <script type="text/javascript" src="/js/popup/popupApp.js"></script>
     </head>
@@ -23,7 +23,7 @@
                         <tbody>
                             <tr ng-repeat="domain in blocklistCtrl.domains" ng-class-odd="'odd'" ng-class-even="'even'">
                                 <td>{{domain}}</td>
-                                <td><button ng-controller="AddToWhitelistButtonController as buttonCtrl" ng-disabled="!buttonCtrl.active" ng-click="buttonCtrl.click(domain)">{{buttonCtrl.buttonText}}</button></td>
+                                <td><button class="medium" ng-controller="AddToWhitelistButtonController as buttonCtrl" ng-disabled="!buttonCtrl.active" ng-click="buttonCtrl.click(domain)">{{buttonCtrl.buttonText}}</button></td>
                             </tr>
                         </tbody>
                     </table>

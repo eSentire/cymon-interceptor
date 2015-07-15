@@ -1,10 +1,4 @@
-body {
-}
-
 main {
-    text-align: center;
-}
-
-h1 {
-    font-size: 2em;
+    width: 30%;
+    margin: 0 auto;
 }

@@ -43,7 +43,6 @@ Whitelist.prototype.get = function(){
 Whitelist.prototype.clear = function () {
     this._whitelist = [];
     chrome.storage.local.set({ whitelist: [] });
-    return true;
 };
 
 /***************************************************************************

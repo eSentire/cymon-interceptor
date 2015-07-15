@@ -3,11 +3,11 @@
     <head>
         <meta charset="utf-8">
         <title>Cymon Interceptor Options</title>
-        <link rel="stylesheet" type="text/css" href="/css/angular-csp.css">
+        <link rel="stylesheet" type="text/css" href="/lib/angular-csp.css">
         <link rel="stylesheet" type="text/css" href="/css/global.css">
         <link rel="stylesheet" type="text/css" href="/css/options.css">
-        <script type="text/javascript" src="/js/plugins/jquery-1.11.3.min.js"></script>
-        <script type="text/javascript" src="/js/plugins/angular.min.js"></script>
+        <script type="text/javascript" src="/lib/jquery-1.11.3.min.js"></script>
+        <script type="text/javascript" src="/lib/angular.min.js"></script>
         <script type="text/javascript" src="/js/services.js"></script>
         <script type="text/javascript" src="/js/options/optionsApp.js"></script>
     </head>
@@ -28,7 +28,7 @@
                     </thead>
                     <tbody>
                         <tr ng-repeat="domain in whitelistCtrl.domains" ng-class-odd="'odd'" ng-class-even="'even'">
-                            <td>{{domain}}</td><td><button ng-controller="RemoveFromWhitelistButtonController as button" ng-disabled="!button.active" ng-click="button.click(domain)">{{button.buttonText}}</button></td>
+                            <td>{{domain}}</td><td><button class="medium" ng-controller="RemoveFromWhitelistButtonController as button" ng-disabled="!button.active" ng-click="button.click(domain)">{{button.buttonText}}</button></td>
                         </tr>
                     </tbody>
                     <tfoot>
@@ -37,8 +37,8 @@
                         </tr>
                     </tfoot>
                 </table>
+                <button class="large" ng-controller="ClearWhitelistButtonController as button" ng-show="whitelistCtrl.domains.length" ng-disabled="!button.active" ng-click="button.click()">{{button.buttonText}}</button>
             </div>
-            <button ng-controller="ClearWhitelistButtonController as button" ng-disabled="!button.active" ng-click="button.click()">{{button.buttonText}}</button>
         </main>
     </body>
 </html>

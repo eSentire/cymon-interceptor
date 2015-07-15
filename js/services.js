@@ -31,7 +31,7 @@
         }
     });
 
-    app.service('whitelistService', function() {
+    app.service('whitelistService', ['$rootScope', function($rootScope) {
         this.addToWhitelist = function (domain) {
             if (chrome.extension.getBackgroundPage().whitelist.add(domain)) {
                 chrome.extension.getBackgroundPage().initListener();
@@ -51,12 +51,9 @@
         };
 
         this.clearWhitelist = function () {
-            if (chrome.extension.getBackgroundPage().whitelist.clear()) {
-                chrome.extension.getBackgroundPage().initListener();
-                return true;
-            } else {
-                return false;
-            }
+            chrome.extension.getBackgroundPage().whitelist.clear();
+            chrome.extension.getBackgroundPage().initListener();
+            $rootScope.$broadcast("whitelistCleared");
         };
 
         this.getWhitelist = function () {
@@ -66,5 +63,5 @@
             }
             return whitelist;
         };
-    });
+    }]);
 })();

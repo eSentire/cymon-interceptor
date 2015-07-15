@@ -7,8 +7,15 @@ header {
     text-align: center;
 }
 
+/***********Table**********/
 table {
     text-align: left;
+}
+
+th {
+    background-color: #a0201d;
+    color: #FFFFFF;
+    font-size: 1.1em;
 }
 
 th, td {
@@ -33,12 +40,8 @@ tr.odd {
     background-color: #E6E6E6;
 }
 
-th {
-    background-color: #a0201d;
-    color: #FFFFFF;
-    font-size: 1.1em;
-}
 
+/***********Button**********/
 button {
     background-color: #FFFFFF;
     border: 1px solid;
@@ -47,6 +50,19 @@ button {
     padding: 5px;
 }
 
+button:active {
+    background-color: #EEEEEE;
+    text-shadow:0 0 black;
+}
+
 button:disabled {
     background-color: #EEEEEE;
+}
+
+button.medium {
+    min-width: 80px;
+}
+
+button.large {
+    min-width: 105px;
 }
