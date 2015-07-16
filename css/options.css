@@ -1,15 +1,3 @@
-table {
-    width: 100%;
-}
-
-table td, table th {
-    width: 50%;
-}
-
-table td+td, table th+th {
-    text-align: right;
-}
-
 main {
     width: 30%;
     margin: 0 auto;

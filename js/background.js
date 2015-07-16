@@ -54,31 +54,56 @@ function getCymonInfo() {
 };
 
 function listenerCallback(details) {
-    if (details.type == "main_frame") { //Call was made from browser; redirect user to safe Cymon page
-        return { redirectUrl: chrome.extension.getURL("/html/redirect.html") };
-    } else { //Call was made within page; block request
-        chrome.tabs.sendMessage(
-            details.tabId,
-            { action: "addToBlocklist", domain: new URL(details.url).hostname },
-            function(response) {
-                if (response.success) {
-                    chrome.browserAction.setBadgeText({
-                        text: response.blocklist.length ? response.blocklist.length.toString() : "",
-                        tabId: details.tabId
+    //if (details.type == "main_frame") { //Call was made from browser; redirect user to safe Cymon page
+    //    return { redirectUrl: chrome.extension.getURL("/html/redirectPage.html") };
+    //} else { //Call was made within page; block request
+    //    chrome.tabs.sendMessage(
+    //        details.tabId,
+    //        { action: "addToBlocklist", domain: new URL(details.url).hostname },
+    //        function(response) {
+    //            if (response.success) {
+    //                chrome.browserAction.setBadgeText({
+    //                    text: response.blocklist.length ? response.blocklist.length.toString() : "",
+    //                    tabId: details.tabId
+    //                });
+    //                if (!response.notified) {
+    //                    chrome.notifications.create({
+    //                        type: "basic",
+    //                        title: "Malicious request blocked",
+    //                        iconUrl: "/images/cymon-icon.png",
+    //                        message: "A web request on this page was deemed malicious by Cymon and has been blocked"
+    //                    });
+    //                }
+    //            }
+    //        }
+    //    );
+    //    return {cancel: true};
+    //}
+    chrome.tabs.sendMessage(
+        details.tabId,
+        { action: "addToBlocklist", domain: new URL(details.url).hostname },
+        function(response) {
+            if (response && response.success) {
+                chrome.browserAction.setBadgeText({
+                    text: response.blocklist.length ? response.blocklist.length.toString() : "",
+                    tabId: details.tabId
+                });
+                if (!response.notified) {
+                    chrome.notifications.create({
+                        type: "basic",
+                        title: "Malicious request blocked",
+                        iconUrl: "/images/cymon-icon.png",
+                        message: "A web request on this page was deemed malicious by Cymon and has been blocked"
                     });
-                    if (!response.notified) {
-                        chrome.notifications.create({
-                            type: "basic",
-                            title: "Malicious request blocked",
-                            iconUrl: "/images/cymon-icon.png",
-                            message: "A web request on this page was deemed malicious by Cymon and has been blocked"
-                        });
-                    }
                 }
             }
-        );
-
-        return { cancel: true };
+        }
+    );
+    if (details.type == "main_frame") {
+        lastRedirect = new URL(details.url).hostname;
+        return { redirectUrl: chrome.extension.getURL("/html/redirectPage.html") };
+    } else {
+        return {cancel: true};
     }
 }
 
@@ -104,3 +129,5 @@ chrome.storage.local.get(function (items) {
     }
     initListener();
 });
+
+var lastRedirect = "";

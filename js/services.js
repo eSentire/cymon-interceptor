@@ -1,6 +1,12 @@
 (function() {
     var app = angular.module("services", []);
 
+    app.service('redirectService', function() {
+       this.getLastRedirect = function() {
+           return chrome.extension.getBackgroundPage().lastRedirect;
+       };
+    });
+
     app.service('blocklistService', function() {
         this.getBlocklist = function (callback) {
             chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="domain" ng-csp>
+    <head>
+        <meta charset="utf-8">
+        <title>Redirect by Cymon Interceptor</title>
+        <link rel="stylesheet" type="text/css" href="/lib/angular-csp.css">
+        <link rel="stylesheet" type="text/css" href="/css/global.css">
+        <link rel="stylesheet" type="text/css" href="/css/redirectPage.css">
+        <script type="text/javascript" src="/lib/jquery-1.11.3.min.js"></script>
+        <script type="text/javascript" src="/lib/angular.min.js"></script>
+        <script type="text/javascript" src="/js/services.js"></script>
+        <script type="text/javascript" src="/js/redirect/redirectApp.js"></script>
+    </head>
+    <body>
+        <header>
+            <img src="/images/cymon-logo-full.png" alt="Cymon Logo">
+        </header>
+        <main>
+            <h1>Redirect by Cymon Interceptor</h1>
+            <p>The destination you chose was deemed malicious by Cymon, so we've redirected you.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Domain</th>
+                        <th>Options</th>
+                    </tr>
+                </thead>
+                <tbody ng-controller="DomainController as domainCtrl">
+                    <tr class="odd">
+                        <td>{{domainCtrl.domain}}</td>
+                        <td><button class="medium" ng-controller="AddToWhitelistButtonController as buttonCtrl" ng-disabled="!buttonCtrl.active" ng-click="buttonCtrl.click(domainCtrl.domain)">{{buttonCtrl.buttonText}}</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+    </body>
+</html>

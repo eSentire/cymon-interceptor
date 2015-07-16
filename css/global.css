@@ -10,6 +10,7 @@ header {
 /***********Table**********/
 table {
     text-align: left;
+    width: 100%;
 }
 
 th {
@@ -20,6 +21,7 @@ th {
 
 th, td {
     padding: 3px;
+    width: 50%;
 }
 
 thead th {
@@ -40,7 +42,9 @@ tr.odd {
     background-color: #E6E6E6;
 }
 
-
+td+td, th+th {
+    text-align: right;
+}
 /***********Button**********/
 button {
     background-color: #FFFFFF;
