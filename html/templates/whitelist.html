@@ -1,0 +1,21 @@
+<div ng-show="whitelistCtrl.domains.length">
+    <table>
+        <thead>
+            <th>Domain</th>
+            <th>Remove</th>
+        </thead>
+        <tfoot>
+            <th>Domain</th>
+            <th>Remove</th>
+        </tfoot>
+        <tbody>
+            <tr ng-repeat="domain in whitelistCtrl.domains" ng-class-odd="'odd'" ng-class-even="'even'">
+                <td>{{ domain }}</td><td><button ng-click="whitelistCtrl.removeFromWhitelist(domain)">Remove</button></td>
+            </tr>
+        </tbody>
+    </table>
+    <button ng-click="whitelistCtrl.clearWhitelist()">Clear Whitelist</button>
+</div>
+<div ng-hide="whitelistCtrl.domains.length">
+    <span>Your whitelist is empty.</span>
+</div>

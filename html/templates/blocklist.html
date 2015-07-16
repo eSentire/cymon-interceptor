@@ -1,0 +1,22 @@
+<div ng-hide="blocklistCtrl.domains.length">
+    No malicious activity detected on this page.
+</div>
+<div ng-show="blocklistCtrl.domains.length">
+    <div>The following domains have been blocked by Cymon Interceptor:</div>
+    <table>
+        <thead>
+            <th>Domain</th>
+            <th>Whitelist</th>
+        </thead>
+        <tfoot>
+            <th>Domain</th>
+            <th>Whitelist</th>
+        </tfoot>
+        <tbody>
+            <tr ng-repeat="domain in blocklistCtrl.domains" ng-class-odd="'odd'" ng-class-even="'even'">
+                <td>{{domain}}</td>
+                <td><button ng-click="blocklistCtrl.addToWhitelist(domain)">Whitelist</button></td>
+            </tr>
+        </tbody>
+    </table>
+</div>

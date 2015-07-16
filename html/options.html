@@ -8,8 +8,10 @@
         <link rel="stylesheet" type="text/css" href="/css/options.css">
         <script type="text/javascript" src="/lib/jquery-1.11.3.min.js"></script>
         <script type="text/javascript" src="/lib/angular.min.js"></script>
-        <script type="text/javascript" src="/js/services.js"></script>
+
         <script type="text/javascript" src="/js/options/optionsApp.js"></script>
+        <script type="text/javascript" src="/js/options/optionsDirectives.js"></script>
+        <script type="text/javascript" src="/js/services.js"></script>
     </head>
     <body>
         <header>
@@ -18,27 +20,10 @@
         <main>
             <h1>Cymon Interceptor Options</h1>
             <h2>Whitelist</h2>
-            <div ng-controller="WhitelistController as whitelistCtrl">
-                 <div ng-hide="whitelistCtrl.domains.length">Your whitelist is empty.</div>
-                <table ng-show="whitelistCtrl.domains.length">
-                    <thead>
-                        <tr>
-                            <th>Domain</th><th>Options</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="domain in whitelistCtrl.domains" ng-class-odd="'odd'" ng-class-even="'even'">
-                            <td>{{domain}}</td><td><button class="medium" ng-controller="RemoveFromWhitelistButtonController as button" ng-disabled="!button.active" ng-click="button.click(domain)">{{button.buttonText}}</button></td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th>Domain</th><th>Options</th>
-                        </tr>
-                    </tfoot>
-                </table>
-                <button class="large" ng-controller="ClearWhitelistButtonController as button" ng-show="whitelistCtrl.domains.length" ng-disabled="!button.active" ng-click="button.click()">{{button.buttonText}}</button>
-            </div>
+            <whitelist></whitelist>
+            <h2>Settings</h2>
+            <settings></settings>
+
         </main>
     </body>
 </html>

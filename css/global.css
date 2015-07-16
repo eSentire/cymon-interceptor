@@ -3,6 +3,11 @@ body {
     font-size: 1em;
 }
 
+main {
+    width: 30%;
+    margin: 0 auto;
+}
+
 header {
     text-align: center;
 }
@@ -45,6 +50,14 @@ tr.odd {
 td+td, th+th {
     text-align: right;
 }
+
+/***********List**********/
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+
 /***********Button**********/
 button {
     background-color: #FFFFFF;

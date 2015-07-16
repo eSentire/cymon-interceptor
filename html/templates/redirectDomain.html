@@ -1,0 +1,17 @@
+<table ng-hide="redirectCtrl.whitelisted">
+    <thead>
+        <tr>
+            <th>Domain</th>
+            <th>Whitelist</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="odd">
+            <td>{{ redirectCtrl.domain }}</td>
+            <td><button ng-click="redirectCtrl.whitelistDomain()">Whitelist</button></td>
+        </tr>
+    </tbody>
+</table>
+<div ng-show="redirectCtrl.whitelisted">
+    You have whitelisted {{ redirectCtrl.domain }}.
+</div>

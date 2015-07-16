@@ -1,6 +1,25 @@
 (function() {
     var app = angular.module("services", []);
 
+    app.service('optionsService', function() {
+
+        this.getTags = function() {
+            return chrome.extension.getBackgroundPage().options.getTags();
+        };
+
+        this.setTags = function (tags) {
+            return chrome.extension.getBackgroundPage().options.setTags(tags);
+        };
+
+        this.getDays = function() {
+            return chrome.extension.getBackgroundPage().options.getDays();
+        };
+
+        this.setDays = function (days) {
+            return chrome.extension.getBackgroundPage().options.setDays(days);
+        };
+    });
+
     app.service('redirectService', function() {
        this.getLastRedirect = function() {
            return chrome.extension.getBackgroundPage().lastRedirect;
@@ -19,7 +38,7 @@
         };
 
         //Would like to remove this
-        this.removeFromBlocklist = function (domain) {
+        this.removeFromBlocklist = function (domain, callback) {
             chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
                 chrome.tabs.sendMessage(
                     tabs[0].id,

@@ -1,0 +1,10 @@
+<form name="settingsForm" ng-submit="settingsForm.$valid && settingsCtrl.setTags()" novalidate>
+    <ul>
+        <li ng-repeat="(key, value) in settingsCtrl.tags"><input type="checkbox" ng-model="settingsCtrl.tags[key]"><label>{{key}}</label></li>
+    </ul>
+
+    <div>
+        <label>Days: </label><input type="number" ng-model="settingsCtrl.days" required max=7 min=1>
+    </div>
+    <button type="submit" value="Submit">Save Settings</button>
+</form>
