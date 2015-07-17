@@ -1,10 +1,12 @@
 <form name="settingsForm" ng-submit="settingsForm.$valid && settingsCtrl.save(); settingsForm.$setPristine()" novalidate>
-    <ul>
-        <li ng-repeat="(key, value) in settingsCtrl.tags"><input id="checkbox{{key}}" type="checkbox" ng-model="settingsCtrl.tags[key]"><label for="checkbox{{key}}">{{key}}</label></li>
+    <h3>Filters</h3>
+    <p>Every domain in Cymon's database is associated with any number of tags. You can choose which tags you'd like to look for here. More tags mean more information from Cymon.</p>
+    <ul class="list-group">
+        <li class="list-group-item" ng-repeat="(key, value) in settingsCtrl.tags"><input id="checkbox{{key}}" type="checkbox" ng-model="settingsCtrl.tags[key]"> <label for="checkbox{{key}}">{{key}}</label></li>
     </ul>
 
     <div>
-        <label for="days">Days: </label><input id="days" type="number" ng-model="settingsCtrl.days" required max="7" min="1" step="1" pattern="\d*">
+        <span>Retrieve domains with reports within the last</span> <input id="days" type="number" ng-model="settingsCtrl.days" required max="7" min="1" step="1" pattern="\d*"> <label for="days">days</label>
     </div>
-    <button ng-disabled="settingsForm.$pristine || settingsForm.$invalid" type="submit" value="Submit">Save Settings</button>
+    <button class="btn btn-sm btn-default" ng-disabled="settingsForm.$pristine || settingsForm.$invalid" type="submit" value="Submit">Save Settings</button>
 </form>

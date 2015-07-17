@@ -2,10 +2,12 @@
 <html lang="en" ng-app="options" ng-csp>
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Cymon Interceptor Options</title>
         <link rel="stylesheet" type="text/css" href="/css/angular-csp.css">
+        <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css" media="screen">
+        <link rel="stylesheet" type="text/css" href="/css/bootstrap-theme.min.css">
         <link rel="stylesheet" type="text/css" href="/css/global.css">
-        <link rel="stylesheet" type="text/css" href="/css/options.css">
         <script type="text/javascript" src="/js/jquery-1.11.3.min.js"></script>
         <script type="text/javascript" src="/js/angular.min.js"></script>
 
@@ -14,16 +16,25 @@
         <script type="text/javascript" src="/js/services.js"></script>
     </head>
     <body>
-        <header>
-            <img src="/images/cymon-logo-full.png" alt="Cymon Logo">
-        </header>
         <main>
-            <h1>Cymon Interceptor Options</h1>
-            <h2>Whitelist</h2>
-            <whitelist></whitelist>
-            <h2>Settings</h2>
-            <settings></settings>
-
+            <div class="container">
+                <header>
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <img src="/images/cymon-logo-full.png" alt="Cymon Logo">
+                        </div>
+                    </div>
+                </header>
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2 col-xs-12 col-xs-offset-0">
+                        <h1 class="page-header">Cymon Interceptor Options</h1>
+                        <h2>Whitelist</h2>
+                        <whitelist></whitelist>
+                        <h2>Settings</h2>
+                        <settings></settings>
+                    </div>
+                </div>
+            </div>
         </main>
     </body>
 </html>

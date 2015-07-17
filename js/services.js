@@ -22,7 +22,9 @@
 
     app.service('redirectService', function() {
        this.getLastRedirect = function() {
-           return chrome.extension.getBackgroundPage().lastRedirect;
+           var domain = chrome.extension.getBackgroundPage().lastRedirect;
+           chrome.extension.getBackgroundPage().lastRedirect = "";
+           return domain;
        };
     });
 
