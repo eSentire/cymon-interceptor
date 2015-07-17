@@ -1,10 +1,10 @@
-<form name="settingsForm" ng-submit="settingsForm.$valid && settingsCtrl.setTags()" novalidate>
+<form name="settingsForm" ng-submit="settingsForm.$valid && settingsCtrl.save(); settingsForm.$setPristine()" novalidate>
     <ul>
-        <li ng-repeat="(key, value) in settingsCtrl.tags"><input type="checkbox" ng-model="settingsCtrl.tags[key]"><label>{{key}}</label></li>
+        <li ng-repeat="(key, value) in settingsCtrl.tags"><input id="checkbox{{key}}" type="checkbox" ng-model="settingsCtrl.tags[key]"><label for="checkbox{{key}}">{{key}}</label></li>
     </ul>
 
     <div>
-        <label>Days: </label><input type="number" ng-model="settingsCtrl.days" required max=7 min=1>
+        <label for="days">Days: </label><input id="days" type="number" ng-model="settingsCtrl.days" required max="7" min="1" step="1" pattern="\d*">
     </div>
-    <button type="submit" value="Submit">Save Settings</button>
+    <button ng-disabled="settingsForm.$pristine || settingsForm.$invalid" type="submit" value="Submit">Save Settings</button>
 </form>

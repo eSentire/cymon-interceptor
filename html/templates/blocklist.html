@@ -5,12 +5,16 @@
     <div>The following domains have been blocked by Cymon Interceptor:</div>
     <table>
         <thead>
-            <th>Domain</th>
-            <th>Whitelist</th>
+            <tr>
+                <th>Domain</th>
+                <th>Whitelist</th>
+            </tr>
         </thead>
         <tfoot>
-            <th>Domain</th>
-            <th>Whitelist</th>
+            <tr>
+                <th>Domain</th>
+                <th>Whitelist</th>
+            </tr>
         </tfoot>
         <tbody>
             <tr ng-repeat="domain in blocklistCtrl.domains" ng-class-odd="'odd'" ng-class-even="'even'">

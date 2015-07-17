@@ -37,7 +37,7 @@
                 this.tags = optionsService.getTags();
                 this.days = optionsService.getDays();
 
-                this.setTags = function () {
+                this.save = function () {
                     optionsService.setTags(this.tags);
                     optionsService.setDays(this.days);
                 }

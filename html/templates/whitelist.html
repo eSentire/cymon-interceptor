@@ -1,12 +1,16 @@
 <div ng-show="whitelistCtrl.domains.length">
     <table>
         <thead>
-            <th>Domain</th>
-            <th>Remove</th>
+            <tr>
+                <th>Domain</th>
+                <th>Remove</th>
+            </tr>
         </thead>
         <tfoot>
-            <th>Domain</th>
-            <th>Remove</th>
+            <tr>
+                <th>Domain</th>
+                <th>Remove</th>
+            </tr>
         </tfoot>
         <tbody>
             <tr ng-repeat="domain in whitelistCtrl.domains" ng-class-odd="'odd'" ng-class-even="'even'">
