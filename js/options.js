@@ -8,9 +8,9 @@ function Options() {
         'phishing': false,
         'spam': false
     };
-    this._days = 1;
-    this._retrieveInterval = 1;
-    this._retrieveTime = 8;
+    this._fetchLookback = 1;
+    this._fetchInterval = 1;
+    this._fetchTime = 8;
 }
 
 Options.prototype.init = function (storage) {
@@ -18,11 +18,28 @@ Options.prototype.init = function (storage) {
         if (storage.options.tags) {
             this._tags = storage.options.tags;
         }
-        if (storage.options.days) {
-            this._days = storage.options.days;
+        if (storage.options.fetchLookback) {
+            this._fetchLookback = storage.options.fetchLookback;
+        }
+        if (storage.options.fetchInterval) {
+            this._fetchInterval = storage.options.fetchInterval;
+        }
+        if (storage.options.fetchTime) {
+            this._fetchTime = storage.options.fetchTime;
         }
     }
 };
+
+Options.prototype.save = function () {
+    chrome.storage.sync.set({
+       options: {
+           tags: this._tags,
+           fetchLookback: this._fetchLookback,
+           fetchInterval: this._fetchInterval,
+           fetchTime: this._fetchTime
+       }
+    });
+}
 
 Options.prototype.getTags = function () {
     return this._tags;
@@ -30,44 +47,38 @@ Options.prototype.getTags = function () {
 
 Options.prototype.setTags = function (tags) {
     this._tags = tags;
-    chrome.storage.sync.set({
-        options: {
-            tags: this._tags,
-            days: this._days
-        }
-    });
+    this.save();
 };
 
-Options.prototype.getDays = function () {
-    return this._days;
+Options.prototype.getFetchLookback = function () {
+    return this._fetchLookback;
 };
 
-Options.prototype.setDays = function (days) {
-    this._days = days;
-    chrome.storage.sync.set({
-        options: {
-            tags: this._tags,
-            days: this._days
-        }
-    });
-};
-
-Options.prototype.getRetrieveInterval = function() {
-    return this._retrieveInterval;
-};
-
-Options.prototype.setRetrieveInterval = function(interval) {
-    if (typeof interval === 'number' && interval % 1 === 0 && interval > 0 && interval <= 24) {
-        this._retrieveInterval = interval;
+Options.prototype.setFetchLookback = function (days) {
+    if (typeof days === 'number' && days % 1 === 0 && days > 0 && days <= 3) {
+        this._fetchLookback = days;
+        this.save();
     }
 };
 
-Options.prototype.getRetrieveTime = function () {
-    return this._retrieveTime;
-}
+Options.prototype.getFetchInterval = function() {
+    return this._fetchInterval;
+};
 
-Options.prototype.setRetrieveTime = function(time) {
+Options.prototype.setFetchInterval = function(interval) {
+    if (typeof interval === 'number' && interval % 1 === 0 && interval > 0 && interval <= 24) {
+        this._fetchInterval = interval;
+        this.save();
+    }
+};
+
+Options.prototype.getFetchTime = function () {
+    return this._fetchTime;
+};
+
+Options.prototype.setFetchTime = function(time) {
     if (typeof time === 'number' && time % 1 === 0 && time >= 0 && time < 24) {
-        this._retrieveTime = time;
+        this._fetchTime = time;
+        this.save();
     }
 };

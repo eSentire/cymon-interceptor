@@ -35,15 +35,15 @@
             templateUrl: "/html/templates/settings.html",
             controller: ['optionsService', function(optionsService) {
                 this.tags = optionsService.getTags();
-                this.days = optionsService.getDays();
-                this.retrieveInterval = optionsService.getRetrieveInterval();
-                this.retrieveTime = optionsService.getRetrieveTime();
+                this.fetchLookback = optionsService.getFetchLookback();
+                this.fetchInterval = optionsService.getFetchInterval();
+                this.fetchTime = optionsService.getFetchTime();
 
                 this.save = function () {
                     optionsService.setTags(this.tags);
-                    optionsService.setDays(this.days);
-                    optionsService.setRetrieveInterval(this.retrieveInterval);
-                    optionsService.setRetrieveTime(this.retrieveTime);
+                    optionsService.setFetchLookback(this.fetchLookback);
+                    optionsService.setFetchInterval(this.fetchInterval);
+                    optionsService.setFetchTime(this.fetchTime);
                 }
             }],
             controllerAs: "settingsCtrl"

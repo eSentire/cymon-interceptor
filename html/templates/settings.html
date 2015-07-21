@@ -1,6 +1,6 @@
 <form name="settingsForm" ng-submit="settingsForm.$valid && settingsCtrl.save(); settingsForm.$setPristine()" novalidate>
     <h3>Filters</h3>
-    <p>Every domain in Cymon's database is associated with any number of tags. You can choose which tags you'd like to look for here. More tags mean more information from Cymon.</p>
+    <p>Every domain in Cymon's database is associated with one or more of the following tags. You can choose which tags you'd like to look for here. More tags means more information from Cymon.</p>
     <ul class="list-group">
         <li class="list-group-item" ng-repeat="(key, value) in settingsCtrl.tags">
             <input id="checkbox{{key}}" type="checkbox" ng-model="settingsCtrl.tags[key]"> <label for="checkbox{{key}}">{{key}}</label>
@@ -8,21 +8,21 @@
     </ul>
 
     <div>
-        <span>Retrieve domains with reports within the last</span>
-        <input id="days" type="number" ng-model="settingsCtrl.days" required max="3" min="1" step="1" pattern="\d*">
-        <label for="days">day{{settingsCtrl.days != 1 ? 's' : ''}}</label>
+        <span>Fetch domains with reports within the last</span>
+        <input id="fetchLookback" type="number" ng-model="settingsCtrl.fetchLookback" required max="3" min="1" step="1" pattern="\d*">
+        <label for="fetchLookback">day{{settingsCtrl.fetchLookback != 1 ? 's' : ''}}</label>
     </div>
 
     <div>
-        <span>Retrieve domains from Cymon every </span>
-        <input id="retrieveInterval" type="number" ng-model="settingsCtrl.retrieveInterval" required max="24" min="1" step="1" pattern="\d*">
-        <label for="days">hour{{settingsCtrl.retrieveInterval != 1 ? 's' : ''}}</label>
+        <span>Fetch domains from Cymon every </span>
+        <input id="fetchInterval" type="number" ng-model="settingsCtrl.fetchInterval" required max="24" min="1" step="1" pattern="\d*">
+        <label for="fetchInterval">hour{{settingsCtrl.fetchInterval != 1 ? 's' : ''}}</label>
     </div>
 
     <div>
-        <span>Retrieve domains from Cymon at </span>
-        <input id="retrieveTime" type="number" ng-model="settingsCtrl.retrieveTime" required max="23" min="0" step="1" pattern="\d*">
-        <label for="days">o'clock</label>
+        <span>Fetch domains from Cymon at </span>
+        <input id="fetchTime" type="number" ng-model="settingsCtrl.fetchTime" required max="23" min="0" step="1" pattern="\d*">
+        <label for="fetchTime">o'clock</label>
     </div>
 
     <button class="btn btn-sm btn-default" ng-disabled="settingsForm.$pristine || settingsForm.$invalid" type="submit" value="Submit">Save Settings</button>

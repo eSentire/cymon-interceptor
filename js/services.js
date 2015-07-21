@@ -11,28 +11,28 @@
             return chrome.extension.getBackgroundPage().options.setTags(tags);
         };
 
-        this.getDays = function() {
-            return chrome.extension.getBackgroundPage().options.getDays();
+        this.getFetchLookback = function() {
+            return chrome.extension.getBackgroundPage().options.getFetchLookback();
         };
 
-        this.setDays = function(days) {
-            return chrome.extension.getBackgroundPage().options.setDays(days);
+        this.setFetchLookback = function(days) {
+            return chrome.extension.getBackgroundPage().options.setFetchLookback(days);
         };
 
-        this.getRetrieveInterval = function() {
-            return chrome.extension.getBackgroundPage().options.getRetrieveInterval();
+        this.getFetchInterval = function() {
+            return chrome.extension.getBackgroundPage().options.getFetchInterval();
         };
 
-        this.setRetrieveInterval = function(interval) {
-            return chrome.extension.getBackgroundPage().options.setRetrieveInterval(interval);
+        this.setFetchInterval = function(interval) {
+            return chrome.extension.getBackgroundPage().options.setFetchInterval(interval);
         };
 
-        this.getRetrieveTime = function() {
-            return chrome.extension.getBackgroundPage().options.getRetrieveTime();
+        this.getFetchTime = function() {
+            return chrome.extension.getBackgroundPage().options.getFetchTime();
         };
 
-        this.setRetrieveTime = function(time) {
-            return chrome.extension.getBackgroundPage().options.setRetrieveTime(time);
+        this.setFetchTime = function(time) {
+            return chrome.extension.getBackgroundPage().options.setFetchTime(time);
         };
     });
 

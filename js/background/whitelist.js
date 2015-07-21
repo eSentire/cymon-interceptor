@@ -1,8 +1,7 @@
 function Whitelist() {
-    this._whitelist = []; //TODO: Make is-a
+    this._whitelist = [];
 }
 
-//To be used at the start of each session to load data from storage
 Whitelist.prototype.init = function(storage) {
     if (storage && storage.whitelist) {
         this._whitelist = storage.whitelist;
@@ -10,9 +9,8 @@ Whitelist.prototype.init = function(storage) {
 };
 
 Whitelist.prototype.add = function(domain) {
-    var domain_pattern = "*://" + domain + "/*";
-    if (this._whitelist.indexOf(domain_pattern) == -1) {
-        this._whitelist.push(domain_pattern);
+    if (this._whitelist.indexOf(domain) == -1) {
+        this._whitelist.push(domain);
         chrome.storage.sync.set({ whitelist: this._whitelist });
         return true;
     } else {
