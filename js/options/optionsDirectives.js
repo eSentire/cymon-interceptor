@@ -36,10 +36,14 @@
             controller: ['optionsService', function(optionsService) {
                 this.tags = optionsService.getTags();
                 this.days = optionsService.getDays();
+                this.retrieveInterval = optionsService.getRetrieveInterval();
+                this.retrieveTime = optionsService.getRetrieveTime();
 
                 this.save = function () {
                     optionsService.setTags(this.tags);
                     optionsService.setDays(this.days);
+                    optionsService.setRetrieveInterval(this.retrieveInterval);
+                    optionsService.setRetrieveTime(this.retrieveTime);
                 }
             }],
             controllerAs: "settingsCtrl"

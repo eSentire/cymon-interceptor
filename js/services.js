@@ -7,7 +7,7 @@
             return chrome.extension.getBackgroundPage().options.getTags();
         };
 
-        this.setTags = function (tags) {
+        this.setTags = function(tags) {
             return chrome.extension.getBackgroundPage().options.setTags(tags);
         };
 
@@ -15,8 +15,24 @@
             return chrome.extension.getBackgroundPage().options.getDays();
         };
 
-        this.setDays = function (days) {
+        this.setDays = function(days) {
             return chrome.extension.getBackgroundPage().options.setDays(days);
+        };
+
+        this.getRetrieveInterval = function() {
+            return chrome.extension.getBackgroundPage().options.getRetrieveInterval();
+        };
+
+        this.setRetrieveInterval = function(interval) {
+            return chrome.extension.getBackgroundPage().options.setRetrieveInterval(interval);
+        };
+
+        this.getRetrieveTime = function() {
+            return chrome.extension.getBackgroundPage().options.getRetrieveTime();
+        };
+
+        this.setRetrieveTime = function(time) {
+            return chrome.extension.getBackgroundPage().options.setRetrieveTime(time);
         };
     });
 

@@ -1,14 +1,16 @@
 function Options() {
     this._tags = {
-        blacklist: false,
-        botnet: false,
-        dnsbl: true,
-        malicious_activity: false,
-        malware: false,
-        phishing: false,
-        spam: false
+        'blacklist': false,
+        'botnet': false,
+        'dnsbl': true,
+        'malicious activity': false,
+        'malware': false,
+        'phishing': false,
+        'spam': false
     };
     this._days = 1;
+    this._retrieveInterval = 1;
+    this._retrieveTime = 8;
 }
 
 Options.prototype.init = function (storage) {
@@ -48,4 +50,24 @@ Options.prototype.setDays = function (days) {
             days: this._days
         }
     });
+};
+
+Options.prototype.getRetrieveInterval = function() {
+    return this._retrieveInterval;
+};
+
+Options.prototype.setRetrieveInterval = function(interval) {
+    if (typeof interval === 'number' && interval % 1 === 0 && interval > 0 && interval <= 24) {
+        this._retrieveInterval = interval;
+    }
+};
+
+Options.prototype.getRetrieveTime = function () {
+    return this._retrieveTime;
+}
+
+Options.prototype.setRetrieveTime = function(time) {
+    if (typeof time === 'number' && time % 1 === 0 && time >= 0 && time < 24) {
+        this._retrieveTime = time;
+    }
 };

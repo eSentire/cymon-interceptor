@@ -8,7 +8,22 @@
     </ul>
 
     <div>
-        <span>Retrieve domains with reports within the last</span> <input id="days" type="number" ng-model="settingsCtrl.days" required max="7" min="1" step="1" pattern="\d*"> <label for="days">days</label>
+        <span>Retrieve domains with reports within the last</span>
+        <input id="days" type="number" ng-model="settingsCtrl.days" required max="3" min="1" step="1" pattern="\d*">
+        <label for="days">day{{settingsCtrl.days != 1 ? 's' : ''}}</label>
     </div>
+
+    <div>
+        <span>Retrieve domains from Cymon every </span>
+        <input id="retrieveInterval" type="number" ng-model="settingsCtrl.retrieveInterval" required max="24" min="1" step="1" pattern="\d*">
+        <label for="days">hour{{settingsCtrl.retrieveInterval != 1 ? 's' : ''}}</label>
+    </div>
+
+    <div>
+        <span>Retrieve domains from Cymon at </span>
+        <input id="retrieveTime" type="number" ng-model="settingsCtrl.retrieveTime" required max="23" min="0" step="1" pattern="\d*">
+        <label for="days">o'clock</label>
+    </div>
+
     <button class="btn btn-sm btn-default" ng-disabled="settingsForm.$pristine || settingsForm.$invalid" type="submit" value="Submit">Save Settings</button>
 </form>

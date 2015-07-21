@@ -8,22 +8,21 @@ Blacklist.prototype.init = function (storage) {
     }
 };
 
-Blacklist.prototype.getList = function () {
+Blacklist.prototype.get = function () {
     return this._blacklist;
 };
 
-Blacklist.prototype.setList = function (blacklist) {
+Blacklist.prototype.set = function (blacklist) {
     this._blacklist = blacklist;
-    chrome.storage.sync.set({blacklist: this._blacklist})
+    chrome.storage.local.set({blacklist: this._blacklist})
 };
 
-Blacklist.prototype.retrieveBlacklist = function () {
-    var request = new XMLHttpRequest();
-    request.open("GET", 'http://cymoncommunity-dev-wartenuq33.elasticbeanstalk.com/api/nexus/v1/blacklist/ip/dnsbl/?days=3', true); //TODO: Hard-coded URL = bad?
-    request.onreadystatechange = function () {//TODO: Need login creds
-        if (request.readyState == 4) {
-            console.log(JSON.parse(request.responseText));
-        }
+Blacklist.prototype.add = function (domain) {
+    if (this._blacklist.indexOf(domain) == -1) {
+        this._blacklist.push(domain);
+        chrome.storage.local.set({ blacklist: this._blacklist });
+        return true;
+    } else {
+        return false;
     }
-    request.send();
-}
+};
