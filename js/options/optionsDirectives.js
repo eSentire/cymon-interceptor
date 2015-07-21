@@ -37,13 +37,11 @@
                 this.tags = optionsService.getTags();
                 this.fetchLookback = optionsService.getFetchLookback();
                 this.fetchInterval = optionsService.getFetchInterval();
-                this.fetchTime = optionsService.getFetchTime();
 
                 this.save = function () {
                     optionsService.setTags(this.tags);
                     optionsService.setFetchLookback(this.fetchLookback);
                     optionsService.setFetchInterval(this.fetchInterval);
-                    optionsService.setFetchTime(this.fetchTime);
                 }
             }],
             controllerAs: "settingsCtrl"

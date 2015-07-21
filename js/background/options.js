@@ -9,8 +9,7 @@ function Options() {
         'spam': false
     };
     this._fetchLookback = 1;
-    this._fetchInterval = 1;
-    this._fetchTime = 8;
+    this._fetchInterval = 24;
 }
 
 Options.prototype.init = function (storage) {
@@ -24,9 +23,6 @@ Options.prototype.init = function (storage) {
         if (storage.options.fetchInterval) {
             this._fetchInterval = storage.options.fetchInterval;
         }
-        if (storage.options.fetchTime) {
-            this._fetchTime = storage.options.fetchTime;
-        }
     }
 };
 
@@ -35,8 +31,7 @@ Options.prototype.save = function () {
        options: {
            tags: this._tags,
            fetchLookback: this._fetchLookback,
-           fetchInterval: this._fetchInterval,
-           fetchTime: this._fetchTime
+           fetchInterval: this._fetchInterval
        }
     });
 }
@@ -68,17 +63,6 @@ Options.prototype.getFetchInterval = function() {
 Options.prototype.setFetchInterval = function(interval) {
     if (typeof interval === 'number' && interval % 1 === 0 && interval > 0 && interval <= 24) {
         this._fetchInterval = interval;
-        this.save();
-    }
-};
-
-Options.prototype.getFetchTime = function () {
-    return this._fetchTime;
-};
-
-Options.prototype.setFetchTime = function(time) {
-    if (typeof time === 'number' && time % 1 === 0 && time >= 0 && time < 24) {
-        this._fetchTime = time;
         this.save();
     }
 };

@@ -64,7 +64,7 @@ function fetchRequest(blacklist, url) {
                 blacklist.add(value.name);
             });
             if (response.next != null) {
-                blacklistRequest(blacklist, response.next);
+                fetchRequest(blacklist, response.next);
             }
         }
     };
@@ -85,12 +85,16 @@ function fetchBlacklist(blacklist, lookback, tags) {
     });
 }
 
+function setNextFetch(nextFetch, time) {
+    nextFetch += time;
+    chrome.storage.local.set({ nextFetch: nextFetch });
+}
 
 var lastRedirect = "";
 var whitelist = new Whitelist();
 var options = new Options();
 var blacklist = new Blacklist();
-var nextFetch;
+var nextFetch = 0;
 
 chrome.storage.sync.get(function (storage) {
     options.init(storage);
@@ -98,7 +102,25 @@ chrome.storage.sync.get(function (storage) {
 });
 
 chrome.storage.local.get(function (storage) {
-    blacklist.init(storage);
+    if (storage && storage.nextFetch) {
+        nextFetch = storage.nextFetch;
+    }
+
+    var now = new Date().getTime();
+    if (now < nextFetch) {
+        blacklist.init(storage);
+        setTimeout(
+            function() {
+                fetchBlacklist(blacklist, options.getFetchLookback(), options.getTags());
+                setNextFetch(nextFetch, new Date().getTime() + options.getFetchInterval()*3600000);
+            },
+            now - nextFetch
+        );
+    } else {
+        fetchBlacklist(blacklist, options.getFetchLookback(), options.getTags());
+        setNextFetch(nextFetch, new Date().getTime() + options.getFetchInterval()*3600000);
+    }
+
     initListener();
 });
 

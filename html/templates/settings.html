@@ -19,11 +19,5 @@
         <label for="fetchInterval">hour{{settingsCtrl.fetchInterval != 1 ? 's' : ''}}</label>
     </div>
 
-    <div>
-        <span>Fetch domains from Cymon at </span>
-        <input id="fetchTime" type="number" ng-model="settingsCtrl.fetchTime" required max="23" min="0" step="1" pattern="\d*">
-        <label for="fetchTime">o'clock</label>
-    </div>
-
     <button class="btn btn-sm btn-default" ng-disabled="settingsForm.$pristine || settingsForm.$invalid" type="submit" value="Submit">Save Settings</button>
 </form>
