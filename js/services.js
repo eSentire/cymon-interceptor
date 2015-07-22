@@ -18,6 +18,14 @@
         this.setFetchLookback = function(days) {
             return chrome.extension.getBackgroundPage().options.setFetchLookback(days);
         };
+
+        this.getFetchInterval = function() {
+            return chrome.extension.getBackgroundPage().options.getFetchInterval();
+        };
+
+        this.setFetchInterval = function(hours) {
+            return chrome.extension.getBackgroundPage().options.setFetchInterval(hours);
+        };
     });
 
     app.service('redirectService', function() {
