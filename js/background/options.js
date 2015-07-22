@@ -60,6 +60,10 @@ Options.prototype.getFetchInterval = function() {
     return this._fetchInterval;
 };
 
+Options.prototype.getFetchIntervalMs = function() {
+    return this._fetchInterval * 3600000;
+};
+
 Options.prototype.setFetchInterval = function(interval) {
     if (typeof interval === 'number' && interval % 1 === 0 && interval > 0 && interval <= 24) {
         this._fetchInterval = interval;

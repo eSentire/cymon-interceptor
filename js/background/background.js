@@ -31,7 +31,7 @@ function blockingCallback(details) {
 }
 
 function getUrlPatterns() {
-    var shortlist = $(blacklist.get()).not(whitelist.get()).get(); //Gets the blacklist, minus the whitelist
+    var shortlist = $(blacklist.getBlacklist()).not(whitelist.get()).get(); //Gets the blacklist, minus the whitelist
     var urlPatterns = [];
     $.each(shortlist, function(index, domain){
         urlPatterns.push("*://" + domain + "/*");
@@ -61,7 +61,7 @@ function fetchRequest(blacklist, url) {
         if (request.readyState == 4) {
             var response = JSON.parse(request.responseText);
             $.each(response.results, function(key, value) {
-                blacklist.add(value.name);
+                blacklist.addToBlacklist(value.name);
             });
             if (response.next != null) {
                 fetchRequest(blacklist, response.next);
@@ -85,16 +85,35 @@ function fetchBlacklist(blacklist, lookback, tags) {
     });
 }
 
-function setNextFetch(nextFetch, time) {
-    nextFetch += time;
-    chrome.storage.local.set({ nextFetch: nextFetch });
+function scheduleFetch() {
+    //Set time to fetch based on scheduled fetch time (last fetch time + fetch interval) and current time
+    setTimeout(
+        function() {
+            var fetchIntervalMs = options.getFetchIntervalMs();
+
+            fetchBlacklist(blacklist, options.getFetchLookback(), options.getTags());
+            initListener();
+            blacklist.setLastFetch(new Date().getTime());
+
+            //Set to repeat fetch on interval; only relevant if the user leaves their browser on for a longer period of time than their fetch interval
+            setInterval(
+                function() {
+                    fetchBlacklist(blacklist, options.getFetchLookback(), options.getTags());
+                    initListener();
+                    blacklist.setLastFetch(new Date().getTime());
+                },
+                fetchIntervalMs
+            );
+        },
+        new Date().getTime() - (blacklist.getLastFetch() + options.getFetchInterval())
+    );
+    initListener();
 }
 
 var lastRedirect = "";
 var whitelist = new Whitelist();
 var options = new Options();
 var blacklist = new Blacklist();
-var nextFetch = 0;
 
 chrome.storage.sync.get(function (storage) {
     options.init(storage);
@@ -102,25 +121,6 @@ chrome.storage.sync.get(function (storage) {
 });
 
 chrome.storage.local.get(function (storage) {
-    if (storage && storage.nextFetch) {
-        nextFetch = storage.nextFetch;
-    }
-
-    var now = new Date().getTime();
-    if (now < nextFetch) {
-        blacklist.init(storage);
-        setTimeout(
-            function() {
-                fetchBlacklist(blacklist, options.getFetchLookback(), options.getTags());
-                setNextFetch(nextFetch, new Date().getTime() + options.getFetchInterval()*3600000);
-            },
-            now - nextFetch
-        );
-    } else {
-        fetchBlacklist(blacklist, options.getFetchLookback(), options.getTags());
-        setNextFetch(nextFetch, new Date().getTime() + options.getFetchInterval()*3600000);
-    }
-
-    initListener();
+    blacklist.init(storage);
+    scheduleFetch();
 });
-
