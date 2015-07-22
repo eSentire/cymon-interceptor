@@ -3,20 +3,27 @@
     <p>Every domain in Cymon's database is associated with one or more of the following tags. You can choose which tags you'd like to look for here. More tags means more information from Cymon.</p>
     <ul class="list-group">
         <li class="list-group-item" ng-repeat="(key, value) in settingsCtrl.tags">
-            <input id="checkbox{{key}}" type="checkbox" ng-model="settingsCtrl.tags[key]"> <label for="checkbox{{key}}">{{key}}</label>
+            <input id="checkbox{{key}}" name="checkbox{{key}}" type="checkbox" ng-model="settingsCtrl.tags[key]"> <label for="checkbox{{key}}">{{key}}</label>
         </li>
     </ul>
 
     <div>
         <span>Fetch domains with reports within the last</span>
-        <input id="fetchLookback" type="number" ng-model="settingsCtrl.fetchLookback" required max="3" min="1" step="1" pattern="\d*">
+        <input id="fetchLookback" name="fetchLookback" type="number" ng-model="settingsCtrl.fetchLookback" required max="3" min="1" step="1" pattern="\d*">
         <label for="fetchLookback">day{{settingsCtrl.fetchLookback != 1 ? 's' : ''}}</label>
+        <span ng-show="settingsForm.fetchLookback.$invalid" class="alert alert-danger inline">Please enter a whole number from 1 to 3.</span>
     </div>
 
     <div>
         <span>Fetch domains from Cymon every </span>
-        <input id="fetchInterval" type="number" ng-model="settingsCtrl.fetchInterval" required max="24" min="1" step="1" pattern="\d*">
+        <input id="fetchInterval" name="fetchInterval" type="number" ng-model="settingsCtrl.fetchInterval" required max="24" min="1" step="1" pattern="\d*">
         <label for="fetchInterval">hour{{settingsCtrl.fetchInterval != 1 ? 's' : ''}}</label>
+        <span ng-show="settingsForm.fetchInterval.$invalid" class="alert alert-danger inline">Please enter a whole number from 1 to 24.</span>
+        <div class="sub" ng-hide="settingsForm.fetchInterval.$invalid">Next fetch will occur {{
+            settingsCtrl.fetchInterval*3600000 + settingsCtrl.lastFetch > settingsCtrl.currentTime ?
+            (settingsCtrl.fetchInterval*3600000 + settingsCtrl.lastFetch | date:"'on' MM/dd/yyyy 'at' h:mma") :
+            "immediately."}}
+        </div>
     </div>
 
     <button class="btn btn-sm btn-default" ng-disabled="settingsForm.$pristine || settingsForm.$invalid" type="submit" value="Submit">Save Settings</button>

@@ -6,10 +6,19 @@ body {
 .container {
     background-color: white;
     padding-top: 50px;
-    padding-bottom: 100px;
-    margin-bottom: 100px;
+    padding-bottom: 150px;
 }
 
 img {
     max-width: 100%;
+}
+
+.sub {
+    color: #aaa;
+    font-style: italic;
+    font-size: 0.9em;
+}
+
+.alert.inline {
+    padding: 3px 5px;
 }

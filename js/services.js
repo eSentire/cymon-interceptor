@@ -24,8 +24,16 @@
         };
 
         this.setFetchInterval = function(hours) {
-            return chrome.extension.getBackgroundPage().options.setFetchInterval(hours);
+            var response = chrome.extension.getBackgroundPage().options.setFetchInterval(hours)
+            chrome.extension.getBackgroundPage().scheduleFetch();
+            return response;
         };
+    });
+
+    app.service('blacklistService', function() {
+        this.getLastFetch = function() {
+            return chrome.extension.getBackgroundPage().blacklist.getLastFetch();
+        }
     });
 
     app.service('redirectService', function() {

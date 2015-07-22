@@ -33,10 +33,12 @@
         return {
             restrict: "E",
             templateUrl: "/html/templates/settings.html",
-            controller: ['optionsService', function(optionsService) {
+            controller: ['optionsService', 'blacklistService', function(optionsService, blacklistService) {
                 this.tags = optionsService.getTags();
                 this.fetchLookback = optionsService.getFetchLookback();
                 this.fetchInterval = optionsService.getFetchInterval();
+                this.lastFetch = blacklistService.getLastFetch();
+                this.currentTime = new Date().getTime();
 
                 this.save = function () {
                     optionsService.setTags(this.tags);

@@ -39,6 +39,7 @@ function getUrlPatterns() {
     return urlPatterns;
 }
 
+
 //Needs to be called on startup; also whenever the whitelist or blacklist are updated
 function initListener() {
     var urls = getUrlPatterns();
@@ -76,10 +77,7 @@ function fetchBlacklist(blacklist, lookback, tags) {
         if (enabled) {
             fetchRequest(
                 blacklist,
-                'http://cymoncommunity-dev-wartenuq33.elasticbeanstalk.com/api/nexus/v1/blacklist/domain/' +
-                encodeURIComponent(tag) +
-                '/?days=' + encodeURIComponent(lookback) +
-                '&limit=1000'
+                encodeURI('http://cymoncommunity-dev-wartenuq33.elasticbeanstalk.com/api/nexus/v1/blacklist/domain/' + tag + '/?days=' + lookback + '&limit=1000')
             );
         }
     });
@@ -87,7 +85,15 @@ function fetchBlacklist(blacklist, lookback, tags) {
 
 function scheduleFetch() {
     //Set time to fetch based on scheduled fetch time (last fetch time + fetch interval) and current time
-    setTimeout(
+
+    if (timeout) {
+        clearTimeout(timeout);
+    }
+    if (interval) {
+        clearInterval(interval);
+    }
+
+    timeout = setTimeout(
         function() {
             var fetchIntervalMs = options.getFetchIntervalMs();
 
@@ -96,7 +102,7 @@ function scheduleFetch() {
             blacklist.setLastFetch(new Date().getTime());
 
             //Set to repeat fetch on interval; only relevant if the user leaves their browser on for a longer period of time than their fetch interval
-            setInterval(
+            interval = setInterval(
                 function() {
                     fetchBlacklist(blacklist, options.getFetchLookback(), options.getTags());
                     initListener();
@@ -114,6 +120,7 @@ var lastRedirect = "";
 var whitelist = new Whitelist();
 var options = new Options();
 var blacklist = new Blacklist();
+var timeout, interval;
 
 chrome.storage.sync.get(function (storage) {
     options.init(storage);
