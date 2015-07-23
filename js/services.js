@@ -77,7 +77,6 @@
     app.service('whitelistService', ['$rootScope', function($rootScope) {
         this.addToWhitelist = function (domain) {
             if (chrome.extension.getBackgroundPage().whitelist.add(domain)) {
-                chrome.extension.getBackgroundPage().initListener();
                 return true;
             } else {
                 return false;
@@ -86,7 +85,6 @@
 
         this.removeFromWhitelist = function (domain) {
             if (chrome.extension.getBackgroundPage().whitelist.remove(domain)) {
-                chrome.extension.getBackgroundPage().initListener();
                 return true;
             } else {
                 return false;
@@ -95,7 +93,6 @@
 
         this.clearWhitelist = function () {
             chrome.extension.getBackgroundPage().whitelist.clear();
-            chrome.extension.getBackgroundPage().initListener();
             $rootScope.$broadcast("whitelistCleared");
         };
 

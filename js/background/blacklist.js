@@ -7,6 +7,7 @@ Blacklist.prototype.init = function (storage) {
     if (storage) {
         if (storage.blacklist) {
             this._blacklist = storage.blacklist;
+            chrome.runtime.sendMessage({ action: "blacklistUpdated" });
         }
         if (storage.lastFetch) {
             this._lastFetch = storage.lastFetch;
@@ -21,12 +22,14 @@ Blacklist.prototype.getBlacklist = function () {
 Blacklist.prototype.setBlacklist = function (blacklist) {
     this._blacklist = blacklist;
     chrome.storage.local.set({blacklist: this._blacklist})
+    chrome.runtime.sendMessage({ action: "blacklistUpdated" });
 };
 
 Blacklist.prototype.addToBlacklist = function (domain) {
     if (this._blacklist.indexOf(domain) == -1) {
         this._blacklist.push(domain);
         chrome.storage.local.set({ blacklist: this._blacklist });
+        chrome.runtime.sendMessage({ action: "blacklistUpdated" });
         return true;
     } else {
         return false;

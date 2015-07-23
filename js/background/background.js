@@ -31,27 +31,13 @@ function blockingCallback(details) {
 }
 
 function getUrlPatterns() {
-    var shortlist = $(blacklist.getBlacklist()).not(whitelist.get()).get(); //Gets the blacklist, minus the whitelist
+    var shortlist = $(["en.wikipedia.org", "maps.google.com"]).not(whitelist.get()).get();
+    //var shortlist = $(blacklist.getBlacklist()).not(whitelist.get()).get(); //Gets the blacklist, minus the whitelist
     var urlPatterns = [];
     $.each(shortlist, function(index, domain){
         urlPatterns.push("*://" + domain + "/*");
     });
     return urlPatterns;
-}
-
-
-//Needs to be called on startup; also whenever the whitelist or blacklist are updated
-function initListener() {
-    var urls = getUrlPatterns();
-    chrome.webRequest.onBeforeRequest.removeListener(blockingCallback); //Remove old listener
-
-    if (urls.length) {
-        chrome.webRequest.onBeforeRequest.addListener(
-            blockingCallback,
-            { urls: urls },
-            ["blocking"]
-        );
-    }
 }
 
 function fetchRequest(blacklist, url) {
@@ -72,17 +58,6 @@ function fetchRequest(blacklist, url) {
     request.send();
 }
 
-function fetchBlacklist(blacklist, lookback, tags) {
-    $.each(tags, function (tag, enabled){
-        if (enabled) {
-            fetchRequest(
-                blacklist,
-                encodeURI('http://cymoncommunity-dev-wartenuq33.elasticbeanstalk.com/api/nexus/v1/blacklist/domain/' + tag + '/?days=' + lookback + '&limit=1000')
-            );
-        }
-    });
-}
-
 function scheduleFetch() {
     //Set time to fetch based on scheduled fetch time (last fetch time + fetch interval) and current time
 
@@ -97,24 +72,53 @@ function scheduleFetch() {
         function() {
             var fetchIntervalMs = options.getFetchIntervalMs();
 
-            fetchBlacklist(blacklist, options.getFetchLookback(), options.getTags());
-            initListener();
-            blacklist.setLastFetch(new Date().getTime());
+            chrome.runtime.sendMessage({ action: "fetchIntervalTrigger" });
 
             //Set to repeat fetch on interval; only relevant if the user leaves their browser on for a longer period of time than their fetch interval
             interval = setInterval(
-                function() {
-                    fetchBlacklist(blacklist, options.getFetchLookback(), options.getTags());
-                    initListener();
-                    blacklist.setLastFetch(new Date().getTime());
-                },
+                chrome.runtime.sendMessage({ action: "fetchIntervalTrigger" }),
                 fetchIntervalMs
             );
         },
         blacklist.getLastFetch() > 0 ? (blacklist.getLastFetch() + options.getFetchIntervalMs()) - new Date().getTime() : 0
     );
-    initListener();
 }
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    switch(request.action) {
+        case "whitelistUpdated":
+        case "blacklistUpdated":
+            var urls = getUrlPatterns();
+            chrome.webRequest.onBeforeRequest.removeListener(blockingCallback); //Remove old listener
+
+            if (urls.length) {
+                chrome.webRequest.onBeforeRequest.addListener(
+                    blockingCallback,
+                    { urls: urls },
+                    ["blocking"]
+                );
+            }
+            sendResponse({ success: true });
+            break;
+        case "blacklistOptionsUpdated":
+        case "fetchIntervalTrigger":
+            $.each(options.getTags(), function (tag, enabled){
+                if (enabled) {
+                    fetchRequest(
+                        blacklist,
+                        encodeURI('http://cymoncommunity-dev-wartenuq33.elasticbeanstalk.com/api/nexus/v1/blacklist/domain/' + tag + '/?days=' + options.getFetchLookback() + '&limit=1000')
+                    );
+                }
+            });
+            blacklist.setLastFetch(new Date().getTime());
+            break;
+        case "fetchIntervalUpdated":
+            scheduleFetch();
+        default:
+            sendResponse({ success: false });
+            break;
+    }
+});
 
 var lastRedirect = "";
 var whitelist = new Whitelist();

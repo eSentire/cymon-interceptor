@@ -43,6 +43,7 @@ Options.prototype.getTags = function () {
 Options.prototype.setTags = function (tags) {
     this._tags = tags;
     this.save();
+    chrome.runtime.sendMessage({ action: "blacklistOptionsUpdated" });
 };
 
 Options.prototype.getFetchLookback = function () {
@@ -53,6 +54,7 @@ Options.prototype.setFetchLookback = function (days) {
     if (typeof days === 'number' && days % 1 === 0 && days > 0 && days <= 3) {
         this._fetchLookback = days;
         this.save();
+        chrome.runtime.sendMessage({ action: "blacklistOptionsUpdated" });
     }
 };
 
@@ -68,5 +70,6 @@ Options.prototype.setFetchInterval = function(interval) {
     if (typeof interval === 'number' && interval % 1 === 0 && interval > 0 && interval <= 24) {
         this._fetchInterval = interval;
         this.save();
+        chrome.runtime.sendMessage({ action: "fetchIntervalUpdated" });
     }
 };
