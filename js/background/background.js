@@ -59,29 +59,7 @@ function fetchRequest(blacklist, url) {
 }
 
 function scheduleFetch() {
-    //Set time to fetch based on scheduled fetch time (last fetch time + fetch interval) and current time
 
-    if (timeout) {
-        clearTimeout(timeout);
-    }
-    if (interval) {
-        clearInterval(interval);
-    }
-
-    timeout = setTimeout(
-        function() {
-            var fetchIntervalMs = options.getFetchIntervalMs();
-
-            chrome.runtime.sendMessage({ action: "fetchIntervalTrigger" });
-
-            //Set to repeat fetch on interval; only relevant if the user leaves their browser on for a longer period of time than their fetch interval
-            interval = setInterval(
-                chrome.runtime.sendMessage({ action: "fetchIntervalTrigger" }),
-                fetchIntervalMs
-            );
-        },
-        blacklist.getLastFetch() > 0 ? (blacklist.getLastFetch() + options.getFetchIntervalMs()) - new Date().getTime() : 0
-    );
 }
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -113,7 +91,28 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             blacklist.setLastFetch(new Date().getTime());
             break;
         case "fetchIntervalUpdated":
-            scheduleFetch();
+            //Set time to fetch based on scheduled fetch time (last fetch time + fetch interval) and current time
+            if (timeout) {
+                clearTimeout(timeout);
+            }
+            if (interval) {
+                clearInterval(interval);
+            }
+
+            timeout = setTimeout(
+                function() {
+                    var fetchIntervalMs = options.getFetchIntervalMs();
+
+                    chrome.runtime.sendMessage({ action: "fetchIntervalTrigger" });
+
+                    //Set to repeat fetch on interval; only relevant if the user leaves their browser on for a longer period of time than their fetch interval
+                    interval = setInterval(
+                        chrome.runtime.sendMessage({ action: "fetchIntervalTrigger" }),
+                        fetchIntervalMs
+                    );
+                },
+                blacklist.getLastFetch() > 0 ? (blacklist.getLastFetch() + options.getFetchIntervalMs()) - new Date().getTime() : 0
+            );
         default:
             sendResponse({ success: false });
             break;
@@ -133,5 +132,5 @@ chrome.storage.sync.get(function (storage) {
 
 chrome.storage.local.get(function (storage) {
     blacklist.init(storage);
-    scheduleFetch();
+    chrome.runtime.sendMessage({ action: "fetchIntervalUpdated" });
 });
