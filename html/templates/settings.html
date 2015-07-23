@@ -3,7 +3,7 @@
     <p>Every domain in Cymon's database is associated with one or more of the following tags. You can choose which tags you'd like to look for here. More tags means more information from Cymon.</p>
     <ul class="list-group">
         <li class="list-group-item" ng-repeat="(key, value) in settingsCtrl.tags">
-            <input id="checkbox{{key}}" name="checkbox{{key}}" type="checkbox" ng-model="settingsCtrl.tags[key]"> <label for="checkbox{{key}}">{{key}}</label>
+            <input id="checkbox{{key | trim}}" name="checkbox{{key | trim}}" type="checkbox" ng-model="settingsCtrl.tags[key]"> <label for="checkbox{{key | trim}}">{{key}}</label>
         </li>
     </ul>
 

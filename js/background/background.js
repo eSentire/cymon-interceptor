@@ -111,7 +111,7 @@ function scheduleFetch() {
                 fetchIntervalMs
             );
         },
-        new Date().getTime() - (blacklist.getLastFetch() + options.getFetchInterval())
+        blacklist.getLastFetch() > 0 ? (blacklist.getLastFetch() + options.getFetchIntervalMs()) - new Date().getTime() : 0
     );
     initListener();
 }

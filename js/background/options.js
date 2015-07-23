@@ -34,7 +34,7 @@ Options.prototype.save = function () {
            fetchInterval: this._fetchInterval
        }
     });
-}
+};
 
 Options.prototype.getTags = function () {
     return this._tags;
