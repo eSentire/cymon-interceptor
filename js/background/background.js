@@ -58,10 +58,6 @@ function fetchRequest(blacklist, url) {
     request.send();
 }
 
-function scheduleFetch() {
-
-}
-
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     switch(request.action) {
         case "whitelistUpdated":
@@ -120,17 +116,17 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 var lastRedirect = "";
-var whitelist = new Whitelist();
-var options = new Options();
-var blacklist = new Blacklist();
+var whitelist;
+var options;
+var blacklist;
 var timeout, interval;
 
 chrome.storage.sync.get(function (storage) {
-    options.init(storage);
-    whitelist.init(storage);
+    options = new Options(storage.options.tags, storage.options.fetchLookback, storage.options.fetchInterval);
+    whitelist = new Whitelist(storage.whitelist);
 });
 
 chrome.storage.local.get(function (storage) {
-    blacklist.init(storage);
+    blacklist = new Blacklist(storage.blacklist, storage.lastFetch);
     chrome.runtime.sendMessage({ action: "fetchIntervalUpdated" });
 });

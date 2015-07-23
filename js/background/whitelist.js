@@ -1,16 +1,8 @@
-var Whitelist = (function() {
-    var _whitelist = [];
+function Whitelist(whitelist) {
+    var _whitelist = whitelist || [];
+    chrome.runtime.sendMessage({ action: "whitelistUpdated" });
 
-    function whitelistObject() {}
-
-    whitelistObject.prototype.init = function(storage) {
-        if (storage && storage.whitelist) {
-            _whitelist = storage.whitelist;
-            chrome.runtime.sendMessage({ action: "whitelistUpdated" });
-        }
-    };
-
-    whitelistObject.prototype.add = function(domain) {
+    this.add = function(domain) {
         if (_whitelist.indexOf(domain) == -1) {
             _whitelist.push(domain);
             chrome.storage.sync.set({ whitelist: _whitelist });
@@ -21,7 +13,7 @@ var Whitelist = (function() {
         }
     };
 
-    whitelistObject.prototype.remove = function(domain) {
+    this.remove = function(domain) {
         var index = _whitelist.indexOf(domain)
         if (index != -1) {
             _whitelist.splice(index, 1);
@@ -33,15 +25,13 @@ var Whitelist = (function() {
         }
     };
 
-    whitelistObject.prototype.get = function(){
+    this.get = function(){
         return _whitelist;
     };
 
-    whitelistObject.prototype.clear = function () {
+    this.clear = function () {
         _whitelist = [];
         chrome.storage.sync.set({ whitelist: [] });
         chrome.runtime.sendMessage({ action: "whitelistUpdated" });
     };
-
-    return whitelistObject;
-})();
+}

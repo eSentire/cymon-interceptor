@@ -1,33 +1,22 @@
-var Blacklist = (function() {
-    var _blacklist = [];
-    var _lastFetch = 0;
+function Blacklist(blacklist, lastFetch) {
+    var _blacklist = blacklist || [];
+    var _lastFetch = lastFetch || 0;
+    chrome.runtime.sendMessage({action: "blacklistUpdated"});
 
-    function blacklistObject(){}
-
-    blacklistObject.prototype.init = function (storage) {
-        if (storage) {
-            if (storage.blacklist) {
-                _blacklist = storage.blacklist;
-                chrome.runtime.sendMessage({ action: "blacklistUpdated" });
-            }
-            if (storage.lastFetch) {
-                _lastFetch = storage.lastFetch;
-            }
-        }
-    };
-
-    blacklistObject.prototype.getBlacklist = function () {
+    this.getBlacklist = function () {
         return _blacklist;
     };
 
-    blacklistObject.prototype.setBlacklist = function (blacklist) {
-        _blacklist = blacklist;
+    this.setBlacklist = function (blacklist) {
+        if (blacklist.constructor === Array) {
+            _blacklist = blacklist;
+        }
         chrome.storage.local.set({blacklist: _blacklist})
         chrome.runtime.sendMessage({ action: "blacklistUpdated" });
     };
 
-    blacklistObject.prototype.addToBlacklist = function (domain) {
-        if (_blacklist.indexOf(domain) == -1) {
+    this.addToBlacklist = function (domain) {
+        if (_blacklist.indexOf(domain) === -1) {
             _blacklist.push(domain);
             chrome.storage.local.set({ blacklist: _blacklist });
             chrome.runtime.sendMessage({ action: "blacklistUpdated" });
@@ -37,7 +26,7 @@ var Blacklist = (function() {
         }
     };
 
-    blacklistObject.prototype.setLastFetch = function(time) {
+    this.setLastFetch = function(time) {
         if (typeof time === 'number') {
             _lastFetch = time;
             chrome.storage.local.set({ lastFetch: _lastFetch });
@@ -47,9 +36,66 @@ var Blacklist = (function() {
         }
     };
 
-    blacklistObject.prototype.getLastFetch = function() {
+    this.getLastFetch = function() {
         return _lastFetch;
     }
+}
 
-    return blacklistObject;
-})();
+//var Blacklist = (function() {
+//    var _blacklist = [];
+//    var _lastFetch = 0;
+//
+//    function blacklistObject() {
+//    }
+//
+//    this.init = function (storage) {
+//        if (storage) {
+//            if (storage.blacklist) {
+//                _blacklist = storage.blacklist;
+//                chrome.runtime.sendMessage({action: "blacklistUpdated"});
+//            }
+//            if (storage.lastFetch) {
+//                _lastFetch = storage.lastFetch;
+//            }
+//        }
+//    };
+//
+//    this.getBlacklist = function () {
+//        return _blacklist;
+//    };
+//
+//    this.setBlacklist = function (blacklist) {
+//        if (blacklist.constructor === Array) {
+//            _blacklist = blacklist;
+//        }
+//        chrome.storage.local.set({blacklist: _blacklist})
+//        chrome.runtime.sendMessage({ action: "blacklistUpdated" });
+//    };
+//
+//    this.addToBlacklist = function (domain) {
+//        if (_blacklist.indexOf(domain) === -1) {
+//            _blacklist.push(domain);
+//            chrome.storage.local.set({ blacklist: _blacklist });
+//            chrome.runtime.sendMessage({ action: "blacklistUpdated" });
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    };
+//
+//    this.setLastFetch = function(time) {
+//        if (typeof time === 'number') {
+//            _lastFetch = time;
+//            chrome.storage.local.set({ lastFetch: _lastFetch });
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    };
+//
+//    this.getLastFetch = function() {
+//        return _lastFetch;
+//    }
+//
+//    return blacklistObject;
+//})();

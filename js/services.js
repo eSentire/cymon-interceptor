@@ -76,19 +76,11 @@
 
     app.service('whitelistService', ['$rootScope', function($rootScope) {
         this.addToWhitelist = function (domain) {
-            if (chrome.extension.getBackgroundPage().whitelist.add(domain)) {
-                return true;
-            } else {
-                return false;
-            }
+            return chrome.extension.getBackgroundPage().whitelist.add(domain);
         };
 
         this.removeFromWhitelist = function (domain) {
-            if (chrome.extension.getBackgroundPage().whitelist.remove(domain)) {
-                return true;
-            } else {
-                return false;
-            }
+            return chrome.extension.getBackgroundPage().whitelist.remove(domain);
         };
 
         this.clearWhitelist = function () {
@@ -97,11 +89,7 @@
         };
 
         this.getWhitelist = function () {
-            var whitelist = chrome.extension.getBackgroundPage().whitelist.get();
-            for (var index in whitelist) {
-                whitelist[index] = whitelist[index].replace("*://", "").replace("/*", "");
-            }
-            return whitelist;
+            return chrome.extension.getBackgroundPage().whitelist.get();
         };
     }]);
 })();
