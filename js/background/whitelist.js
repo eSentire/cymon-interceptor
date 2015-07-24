@@ -1,6 +1,5 @@
 function Whitelist(whitelist) {
     var _whitelist = whitelist || [];
-    chrome.runtime.sendMessage({ action: "whitelistUpdated" });
 
     this.add = function(domain) {
         if (_whitelist.indexOf(domain) == -1) {

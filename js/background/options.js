@@ -11,24 +11,16 @@ function Options(tags, fetchLookback, fetchInterval) {
     var _fetchLookback = fetchLookback || 1;
     var _fetchInterval = fetchInterval || 24;
 
-    function saveOptions() {
-        chrome.storage.sync.set({
-            options: {
-                tags: _tags,
-                fetchLookback: _fetchLookback,
-                fetchInterval: _fetchInterval
-            }
-        });
-    }
-
     this.getTags = function() {
         return _tags;
     };
 
     this.setTags = function (tags) {
-        _tags = tags;
-        saveOptions();
-        chrome.runtime.sendMessage({action: "blacklistOptionsUpdated"});
+        if (tags.constructor === Object) {
+            _tags = tags;
+            chrome.storage.sync.set({tags: _tags});
+            chrome.runtime.sendMessage({action: "blacklistOptionsUpdated"});
+        }
     };
 
     this.getFetchLookback = function () {
@@ -38,7 +30,7 @@ function Options(tags, fetchLookback, fetchInterval) {
     this.setFetchLookback = function (days) {
         if (typeof days === 'number' && days % 1 === 0 && days > 0 && days <= 3) {
             _fetchLookback = days;
-            saveOptions();
+            chrome.storage.sync.set({fetchLookback: _fetchLookback});
             chrome.runtime.sendMessage({action: "blacklistOptionsUpdated"});
         }
     };
@@ -54,7 +46,7 @@ function Options(tags, fetchLookback, fetchInterval) {
     this.setFetchInterval = function (interval) {
         if (typeof interval === 'number' && interval % 1 === 0 && interval > 0 && interval <= 24) {
             _fetchInterval = interval;
-            saveOptions();
+            chrome.storage.sync.set({fetchInterval: _fetchInterval});
             chrome.runtime.sendMessage({action: "fetchIntervalUpdated"});
         }
     };

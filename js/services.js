@@ -25,15 +25,34 @@
 
         this.setFetchInterval = function(hours) {
             var response = chrome.extension.getBackgroundPage().options.setFetchInterval(hours)
-            chrome.extension.getBackgroundPage().scheduleFetch();
+            chrome.runtime.sendMessage({ action: "fetchIntervalUpdated" });
             return response;
         };
     });
 
+    app.service('whitelistService', ['$rootScope', function($rootScope) {
+        this.addToWhitelist = function (domain) {
+            return chrome.extension.getBackgroundPage().whitelist.add(domain);
+        };
+
+        this.removeFromWhitelist = function (domain) {
+            return chrome.extension.getBackgroundPage().whitelist.remove(domain);
+        };
+
+        this.clearWhitelist = function () {
+            chrome.extension.getBackgroundPage().whitelist.clear();
+            $rootScope.$broadcast("whitelistCleared");
+        };
+
+        this.getWhitelist = function () {
+            return chrome.extension.getBackgroundPage().whitelist.get();
+        };
+    }]);
+
     app.service('blacklistService', function() {
         this.getLastFetch = function() {
             return chrome.extension.getBackgroundPage().blacklist.getLastFetch();
-        }
+        };
     });
 
     app.service('redirectService', function() {
@@ -71,25 +90,6 @@
                     }
                 );
             });
-        }
+        };
     });
-
-    app.service('whitelistService', ['$rootScope', function($rootScope) {
-        this.addToWhitelist = function (domain) {
-            return chrome.extension.getBackgroundPage().whitelist.add(domain);
-        };
-
-        this.removeFromWhitelist = function (domain) {
-            return chrome.extension.getBackgroundPage().whitelist.remove(domain);
-        };
-
-        this.clearWhitelist = function () {
-            chrome.extension.getBackgroundPage().whitelist.clear();
-            $rootScope.$broadcast("whitelistCleared");
-        };
-
-        this.getWhitelist = function () {
-            return chrome.extension.getBackgroundPage().whitelist.get();
-        };
-    }]);
 })();

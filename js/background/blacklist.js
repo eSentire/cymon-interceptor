@@ -1,7 +1,6 @@
 function Blacklist(blacklist, lastFetch) {
     var _blacklist = blacklist || [];
     var _lastFetch = lastFetch || 0;
-    chrome.runtime.sendMessage({action: "blacklistUpdated"});
 
     this.getBlacklist = function () {
         return _blacklist;
@@ -16,11 +15,20 @@ function Blacklist(blacklist, lastFetch) {
     };
 
     this.addToBlacklist = function (domain) {
-        if (_blacklist.indexOf(domain) === -1) {
-            _blacklist.push(domain);
-            chrome.storage.local.set({ blacklist: _blacklist });
-            chrome.runtime.sendMessage({ action: "blacklistUpdated" });
+        if (domain.constructor === Array) {
+            _blacklist = _blacklist.concat(domain);
+            chrome.storage.local.set({blacklist: _blacklist});
+            chrome.runtime.sendMessage({action: "blacklistUpdated"});
             return true;
+        } else if (typeof domain === "string") {
+            if (_blacklist.indexOf(domain) === -1) {
+                _blacklist.push(domain);
+                chrome.storage.local.set({blacklist: _blacklist});
+                chrome.runtime.sendMessage({action: "blacklistUpdated"});
+                return true;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
