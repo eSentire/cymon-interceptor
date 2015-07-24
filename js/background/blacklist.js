@@ -34,6 +34,12 @@ function Blacklist(blacklist, lastFetch) {
         }
     };
 
+    this.clearBlacklist = function() {
+        _blacklist = [];
+        chrome.storage.local.set({ blacklist: _blacklist });
+        chrome.runtime.sendMessage({ action: "blacklistUpdated" });
+    };
+
     this.setLastFetch = function(time) {
         if (typeof time === 'number') {
             _lastFetch = time;
