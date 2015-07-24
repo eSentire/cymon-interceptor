@@ -34,7 +34,8 @@ function blockingCallback(details) {
 }
 
 function getUrlPatterns() {
-    var shortlist = $(blacklist.getBlacklist()).not(whitelist.get()).get(); //Gets the blacklist, minus the whitelist
+    var shortlist = $(['en.wikipedia.org']).not(whitelist.get()).get();
+    //var shortlist = $(blacklist.getBlacklist()).not(whitelist.get()).get(); //Gets the blacklist, minus the whitelist
     var urlPatterns = [];
     $.each(shortlist, function(index, domain){
         urlPatterns.push("*://" + domain + "/*");
@@ -159,7 +160,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             break;
         case "blacklistOptionsUpdated":
         case "fetchIntervalTrigger":
-            fetchBlacklist();
+            //fetchBlacklist();
             break;
         case "fetchIntervalUpdated":
             setFetchTime();
@@ -184,6 +185,7 @@ var timeout, interval;
 chrome.storage.sync.get(function (storage) {
     options = new Options(storage.tags, storage.fetchLookback, storage.fetchInterval);
     whitelist = new Whitelist(storage.whitelist);
+    chrome.runtime.sendMessage({ action: "whitelistUpdated" });
 });
 
 chrome.storage.local.get(function (storage) {
