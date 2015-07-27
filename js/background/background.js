@@ -134,7 +134,7 @@ function setFetchTime() {
 
             //Set to repeat fetch on interval; only relevant if the user leaves their browser on for a longer period of time than their fetch interval
             interval = setInterval(
-                chrome.runtime.sendMessage({ action: "fetchIntervalTrigger" }),
+                function() { chrome.runtime.sendMessage({ action: "fetchIntervalTrigger" }); },
                 fetchIntervalMs
             );
         },
