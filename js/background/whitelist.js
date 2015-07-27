@@ -1,6 +1,10 @@
 function Whitelist(whitelist) {
     var _whitelist = whitelist || [];
 
+    this.get = function(){
+        return _whitelist;
+    };
+
     this.add = function(domain) {
         if (_whitelist.indexOf(domain) == -1) {
             _whitelist.push(domain);
@@ -24,13 +28,11 @@ function Whitelist(whitelist) {
         }
     };
 
-    this.get = function(){
-        return _whitelist;
-    };
-
     this.clear = function () {
         _whitelist = [];
         chrome.storage.sync.set({ whitelist: [] });
         chrome.runtime.sendMessage({ action: "whitelistUpdated" });
     };
+
+    chrome.runtime.sendMessage({ action: "whitelistInitialized" });
 }

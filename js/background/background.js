@@ -1,7 +1,7 @@
 /******************************************************************************
 ***********************************Functions***********************************
 ******************************************************************************/
-function blockingCallback(details) {
+function interceptor(details) {
     chrome.tabs.sendMessage(
         details.tabId,
         {
@@ -26,8 +26,7 @@ function blockingCallback(details) {
         }
     );
     if (details.type == "main_frame") {
-        lastRedirect = new URL(details.url).hostname;
-        return { redirectUrl: chrome.extension.getURL("/html/redirectPage.html") };
+        return { redirectUrl: chrome.extension.getURL("/html/redirectPage.html?url=" + encodeURIComponent(new URL(details.url).hostname)) };
     } else {
         return { cancel: true };
     }
@@ -73,11 +72,11 @@ function performFirstTimeSetup () {
 
 function initListener() {
     var urls = getUrlPatterns();
-    chrome.webRequest.onBeforeRequest.removeListener(blockingCallback); //Remove old listener
+    chrome.webRequest.onBeforeRequest.removeListener(interceptor); //Remove old listener
 
     if (urls.length) {
         chrome.webRequest.onBeforeRequest.addListener(
-            blockingCallback,
+            interceptor,
             { urls: urls },
             ["blocking"]
         );
@@ -128,7 +127,7 @@ function setFetchTime() {
 
     timeout = setTimeout(
         function() {
-            var fetchIntervalMs = options.getFetchIntervalMs();
+            var fetchIntervalMs = options.getFetchInterval() * 3600000;
 
             chrome.runtime.sendMessage({ action: "fetchIntervalTrigger" });
 
@@ -138,7 +137,7 @@ function setFetchTime() {
                 fetchIntervalMs
             );
         },
-        blacklist.getLastFetch() > 0 ? (blacklist.getLastFetch() + options.getFetchIntervalMs()) - new Date().getTime() : 0
+        blacklist.getLastFetch() > 0 ? (blacklist.getLastFetch() + options.getFetchInterval() * 3600000) - new Date().getTime() : 0
     );
 }
 
@@ -160,7 +159,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             break;
         case "blacklistOptionsUpdated":
         case "fetchIntervalTrigger":
-            //fetchBlacklist();
+            fetchBlacklist();
             break;
         case "fetchIntervalUpdated":
             setFetchTime();
@@ -173,10 +172,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 
 /******************************************************************************
-***********************************Variables***********************************
+**************************************Main*************************************
 ******************************************************************************/
 
-var lastRedirect = "";
 var whitelist;
 var options;
 var blacklist;

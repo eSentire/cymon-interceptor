@@ -56,11 +56,9 @@
     });
 
     app.service('redirectService', function() {
-       this.getLastRedirect = function() {
-           var domain = chrome.extension.getBackgroundPage().lastRedirect;
-           chrome.extension.getBackgroundPage().lastRedirect = "";
-           return domain;
-       };
+        this.getRedirectDestination = function() {
+            return decodeURIComponent(new RegExp('\\?url=([^&?]*)').exec(location.search)[1]);
+        };
     });
 
     app.service('blocklistService', function() {

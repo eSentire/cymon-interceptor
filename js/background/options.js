@@ -39,10 +39,6 @@ function Options(tags, fetchLookback, fetchInterval) {
         return _fetchInterval;
     };
 
-    this.getFetchIntervalMs = function () {
-        return _fetchInterval * 3600000;
-    };
-
     this.setFetchInterval = function (interval) {
         if (typeof interval === 'number' && interval % 1 === 0 && interval > 0 && interval <= 24) {
             _fetchInterval = interval;
@@ -50,4 +46,6 @@ function Options(tags, fetchLookback, fetchInterval) {
             chrome.runtime.sendMessage({action: "fetchIntervalUpdated"});
         }
     };
+
+    chrome.runtime.sendMessage({ action: "optionsInitialized" });
 }
