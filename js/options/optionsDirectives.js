@@ -41,9 +41,14 @@
                 this.currentTime = new Date().getTime();
 
                 this.save = function () {
-                    optionsService.setTags(this.tags);
-                    optionsService.setFetchLookback(this.fetchLookback);
-                    optionsService.setFetchInterval(this.fetchInterval);
+                    optionsService.set({
+                        tags: this.tags,
+                        fetchLookback: this.fetchLookback,
+                        fetchInterval: this.fetchInterval
+                    });
+                    //optionsService.setTags(this.tags);
+                    //optionsService.setFetchLookback(this.fetchLookback);
+                    //optionsService.setFetchInterval(this.fetchInterval);
                 }
             }],
             controllerAs: "settingsCtrl"

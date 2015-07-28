@@ -24,9 +24,11 @@
         };
 
         this.setFetchInterval = function(hours) {
-            var response = chrome.extension.getBackgroundPage().options.setFetchInterval(hours)
-            chrome.runtime.sendMessage({ action: "fetchIntervalUpdated" });
-            return response;
+            return chrome.extension.getBackgroundPage().options.setFetchInterval(hours);
+        };
+
+        this.set = function(options) {
+            return chrome.extension.getBackgroundPage().options.set(options);
         };
     });
 
@@ -57,7 +59,7 @@
 
     app.service('redirectService', function() {
         this.getRedirectDestination = function() {
-            return decodeURIComponent(new RegExp('\\?url=([^&?]*)').exec(location.search)[1]);
+            return decodeURIComponent(new RegExp('\\?dest=([^&?/:;]*)').exec(location.search)[1]);
         };
     });
 

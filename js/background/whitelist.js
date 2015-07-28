@@ -33,6 +33,4 @@ function Whitelist(whitelist) {
         chrome.storage.sync.set({ whitelist: [] });
         chrome.runtime.sendMessage({ action: "whitelistUpdated" });
     };
-
-    chrome.runtime.sendMessage({ action: "whitelistInitialized" });
 }

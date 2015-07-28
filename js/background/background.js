@@ -26,17 +26,16 @@ function interceptor(details) {
         }
     );
     if (details.type == "main_frame") {
-        return { redirectUrl: chrome.extension.getURL("/html/redirectPage.html?url=" + encodeURIComponent(new URL(details.url).hostname)) };
+        return { redirectUrl: chrome.extension.getURL("/html/redirectPage.html?dest=" + encodeURIComponent(new URL(details.url).hostname)) };
     } else {
         return { cancel: true };
     }
 }
 
 function getUrlPatterns() {
-    var shortlist = $(['en.wikipedia.org']).not(whitelist.get()).get();
-    //var shortlist = $(blacklist.getBlacklist()).not(whitelist.get()).get(); //Gets the blacklist, minus the whitelist
     var urlPatterns = [];
-    $.each(shortlist, function(index, domain){
+    //Gets the blacklist, minus the whitelist, and appends "*://" and "/*" to create valid URL patterns for Chrome's webRequest API
+    $.each($(blacklist.getBlacklist()).not(whitelist.get()).get(), function(index, domain){
         urlPatterns.push("*://" + domain + "/*");
     });
     return urlPatterns;
@@ -70,10 +69,11 @@ function performFirstTimeSetup () {
     });
 }
 
-function initListener() {
+function updateListener() {
     var urls = getUrlPatterns();
     chrome.webRequest.onBeforeRequest.removeListener(interceptor); //Remove old listener
 
+    //Chrome's webRequest API equates an empty list of URL patterns as meaning 'block everything'
     if (urls.length) {
         chrome.webRequest.onBeforeRequest.addListener(
             interceptor,
@@ -99,15 +99,18 @@ function fetchRequest(url) {
             if (response.next != null) {
                 fetchRequest(response.next);
             } else {
+                fetching = false;
                 chrome.browserAction.setIcon({ path: '/images/cymon-icon-19.png' });
             }
         }
     };
     request.send();
-    chrome.browserAction.setIcon({ path: '/images/cymon-icon-loading-19.png' })
 }
 
 function fetchBlacklist() {
+    blacklist.setBlacklist([]);
+    fetching = true;
+    chrome.browserAction.setIcon({ path: '/images/cymon-icon-loading-19.png' })
     $.each(options.getTags(), function (tag, enabled){
         if (enabled) {
             fetchRequest(encodeURI('http://cymoncommunity-dev-wartenuq33.elasticbeanstalk.com/api/nexus/v1/blacklist/domain/' + tag + '/?days=' + options.getFetchLookback() + '&limit=1000'));
@@ -121,22 +124,9 @@ function setFetchTime() {
     if (timeout) {
         clearTimeout(timeout);
     }
-    if (interval) {
-        clearInterval(interval);
-    }
 
     timeout = setTimeout(
-        function() {
-            var fetchIntervalMs = options.getFetchInterval() * 3600000;
-
-            chrome.runtime.sendMessage({ action: "fetchIntervalTrigger" });
-
-            //Set to repeat fetch on interval; only relevant if the user leaves their browser on for a longer period of time than their fetch interval
-            interval = setInterval(
-                function() { chrome.runtime.sendMessage({ action: "fetchIntervalTrigger" }); },
-                fetchIntervalMs
-            );
-        },
+        function() { chrome.runtime.sendMessage({ action: "timerTrigger" }); },
         blacklist.getLastFetch() > 0 ? (blacklist.getLastFetch() + options.getFetchInterval() * 3600000) - new Date().getTime() : 0
     );
 }
@@ -152,15 +142,17 @@ chrome.runtime.onInstalled.addListener(function(details){
 });
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    //Deliberate fall-through as each function can be triggered by multiple events
     switch(request.action) {
         case "whitelistUpdated":
         case "blacklistUpdated":
-            initListener();
+            updateListener();
             break;
         case "blacklistOptionsUpdated":
-        case "fetchIntervalTrigger":
+        case "timerTrigger":
             fetchBlacklist();
             break;
+        case "lastFetchUpdated":
         case "fetchIntervalUpdated":
             setFetchTime();
             break;
@@ -175,10 +167,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 **************************************Main*************************************
 ******************************************************************************/
 
+var fetching = false;
 var whitelist;
-var options;
 var blacklist;
-var timeout, interval;
+var options;
+var timeout;
 
 chrome.storage.sync.get(function (storage) {
     options = new Options(storage.tags, storage.fetchLookback, storage.fetchInterval);

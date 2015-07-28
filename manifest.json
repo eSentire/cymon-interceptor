@@ -39,5 +39,9 @@
     "persistent": true
   },
 
-  "options_page": "html/options.html"
+  "options_page": "html/options.html",
+
+  "web_accessible_resources": [
+    "html/redirectPage.html"
+  ]
 }
