@@ -44,6 +44,20 @@ function getUrlPatterns() {
     return urlPatterns;
 }
 
+function updateListener() {
+    var urls = getUrlPatterns();
+    chrome.webRequest.onBeforeRequest.removeListener(interceptor); //Remove old listener
+
+    //Chrome's webRequest API equates an empty list of URL patterns as meaning 'block everything'
+    if (urls.length) {
+        chrome.webRequest.onBeforeRequest.addListener(
+            interceptor,
+            { urls: urls },
+            ["blocking"]
+        );
+    }
+}
+
 function performFirstTimeSetup () {
     //Initialize local data
     chrome.storage.local.set({
@@ -70,20 +84,6 @@ function performFirstTimeSetup () {
             whitelist: storage.whitelist || []
         });
     });
-}
-
-function updateListener() {
-    var urls = getUrlPatterns();
-    chrome.webRequest.onBeforeRequest.removeListener(interceptor); //Remove old listener
-
-    //Chrome's webRequest API equates an empty list of URL patterns as meaning 'block everything'
-    if (urls.length) {
-        chrome.webRequest.onBeforeRequest.addListener(
-            interceptor,
-            { urls: urls },
-            ["blocking"]
-        );
-    }
 }
 
 function fetchRequest(url) {
