@@ -34,10 +34,13 @@ function interceptor(details) {
 
 function getUrlPatterns() {
     var urlPatterns = [];
-    //Gets the blacklist, minus the whitelist, and appends "*://" and "/*" to create valid URL patterns for Chrome's webRequest API
-    $.each($(blacklist.getBlacklist()).not(whitelist.get()).get(), function(index, domain){
+    //Gets the blacklist, minus the whitelist, and appends "*://" and "" to create valid URL patterns for Chrome's webRequest API
+    $.each($(blacklist.get()).not(whitelist.get()).get(), function(index, domain){
         urlPatterns.push("*://" + domain + "/*");
     });
+    //$.each($(['maps.google.com', 'maps.google.ca']).not(whitelist.get()).get(), function(index, domain){
+    //    urlPatterns.push("*://" + domain + "/*");
+    //});
     return urlPatterns;
 }
 
@@ -92,14 +95,13 @@ function fetchRequest(url) {
             var response = JSON.parse(request.responseText);
             var temp = [];
             $.each(response.results, function(key, value) {
-                //blacklist.addToBlacklist(value.name);
+                //blacklist.add(value.name);
                 temp.push(value.name);
             });
-            blacklist.addToBlacklist(temp);
+            blacklist.add(temp);
             if (response.next != null) {
                 fetchRequest(response.next);
             } else {
-                fetching = false;
                 chrome.browserAction.setIcon({ path: '/images/cymon-icon-19.png' });
             }
         }
@@ -108,28 +110,17 @@ function fetchRequest(url) {
 }
 
 function fetchBlacklist() {
-    blacklist.setBlacklist([]);
-    fetching = true;
-    chrome.browserAction.setIcon({ path: '/images/cymon-icon-loading-19.png' })
+    blacklist.set([]);
+
     $.each(options.getTags(), function (tag, enabled){
         if (enabled) {
+            chrome.browserAction.setIcon({ path: '/images/cymon-icon-loading-19.png' });
             fetchRequest(encodeURI('http://cymoncommunity-dev-wartenuq33.elasticbeanstalk.com/api/nexus/v1/blacklist/domain/' + tag + '/?days=' + options.getFetchLookback() + '&limit=1000'));
         }
     });
-    blacklist.setLastFetch(new Date().getTime());
+    fetcher.setLastFetch(new Date().getTime());
 }
 
-function setFetchTime() {
-    //Set time to fetch based on scheduled fetch time (last fetch time + fetch interval) and current time
-    if (timeout) {
-        clearTimeout(timeout);
-    }
-
-    timeout = setTimeout(
-        function() { chrome.runtime.sendMessage({ action: "timerTrigger" }); },
-        blacklist.getLastFetch() > 0 ? (blacklist.getLastFetch() + options.getFetchInterval() * 3600000) - new Date().getTime() : 0
-    );
-}
 
 /******************************************************************************
 ********************************Event Listeners********************************
@@ -147,14 +138,17 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         case "whitelistUpdated":
         case "blacklistUpdated":
             updateListener();
+            sendResponse({ success: true });
             break;
         case "blacklistOptionsUpdated":
         case "timerTrigger":
             fetchBlacklist();
+            sendResponse({ success: true });
             break;
         case "lastFetchUpdated":
         case "fetchIntervalUpdated":
-            setFetchTime();
+            fetcher.setFetchTimer(options.getFetchInterval() * 3600000);
+            sendResponse({ success: true });
             break;
         default:
             sendResponse({ success: false });
@@ -167,11 +161,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 **************************************Main*************************************
 ******************************************************************************/
 
-var fetching = false;
 var whitelist;
 var blacklist;
 var options;
-var timeout;
+var fetcher;
 
 chrome.storage.sync.get(function (storage) {
     options = new Options(storage.tags, storage.fetchLookback, storage.fetchInterval);
@@ -180,6 +173,7 @@ chrome.storage.sync.get(function (storage) {
 });
 
 chrome.storage.local.get(function (storage) {
-    blacklist = new Blacklist(storage.blacklist, storage.lastFetch);
+    blacklist = new Blacklist(storage.blacklist);
+    fetcher = new Fetcher(storage.lastFetch);
     chrome.runtime.sendMessage({ action: "fetchIntervalUpdated" });
 });

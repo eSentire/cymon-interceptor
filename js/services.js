@@ -53,7 +53,7 @@
 
     app.service('blacklistService', function() {
         this.getLastFetch = function() {
-            return chrome.extension.getBackgroundPage().blacklist.getLastFetch();
+            return chrome.extension.getBackgroundPage().fetcher.getLastFetch();
         };
     });
 
