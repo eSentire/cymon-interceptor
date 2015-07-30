@@ -38,9 +38,6 @@ function getUrlPatterns() {
     $.each($(blacklist.get()).not(whitelist.get()).get(), function(index, domain){
         urlPatterns.push("*://" + domain + "/*");
     });
-    //$.each($(['maps.google.com', 'maps.google.ca']).not(whitelist.get()).get(), function(index, domain){
-    //    urlPatterns.push("*://" + domain + "/*");
-    //});
     return urlPatterns;
 }
 
@@ -86,42 +83,6 @@ function performFirstTimeSetup () {
     });
 }
 
-function fetchRequest(url) {
-    var request = new XMLHttpRequest();
-
-    request.open("GET", url, true);
-    request.onreadystatechange = function () {
-        if (request.readyState == 4) {
-            var response = JSON.parse(request.responseText);
-            var temp = [];
-            $.each(response.results, function(key, value) {
-                //blacklist.add(value.name);
-                temp.push(value.name);
-            });
-            blacklist.add(temp);
-            if (response.next != null) {
-                fetchRequest(response.next);
-            } else {
-                chrome.browserAction.setIcon({ path: '/images/cymon-icon-19.png' });
-            }
-        }
-    };
-    request.send();
-}
-
-function fetchBlacklist() {
-    blacklist.set([]);
-
-    $.each(options.getTags(), function (tag, enabled){
-        if (enabled) {
-            chrome.browserAction.setIcon({ path: '/images/cymon-icon-loading-19.png' });
-            fetchRequest(encodeURI('http://cymoncommunity-dev-wartenuq33.elasticbeanstalk.com/api/nexus/v1/blacklist/domain/' + tag + '/?days=' + options.getFetchLookback() + '&limit=1000'));
-        }
-    });
-    fetcher.setLastFetch(new Date().getTime());
-}
-
-
 /******************************************************************************
 ********************************Event Listeners********************************
 ******************************************************************************/
@@ -142,12 +103,33 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             break;
         case "blacklistOptionsUpdated":
         case "timerTrigger":
-            fetchBlacklist();
+            var fetchLookback = options.getFetchLookback();
+            blacklist.set([]);
+            var requests = 0;
+
+            $.each(options.getTags(), function(tag, enabled) {
+                if (enabled) {
+                    chrome.browserAction.setIcon({path:'/images/cymon-icon-loading-19.png'});
+                    requests++;
+                    fetcher.fetchBlacklistForTag(tag, fetchLookback).then(function(response){
+                        blacklist.add(response);
+                        requests--;
+                        if (requests == 0) {
+                            chrome.browserAction.setIcon({path:'/images/cymon-icon-19.png'});
+                        }
+                    }, function(error){
+                        requests--;
+                        if (requests == 0) {
+                            chrome.browserAction.setIcon({path:'/images/cymon-icon-19.png'});
+                        }
+                    });
+                }
+            });
             sendResponse({ success: true });
             break;
         case "lastFetchUpdated":
         case "fetchIntervalUpdated":
-            fetcher.setFetchTimer(options.getFetchInterval() * 3600000);
+            fetcher.setFetchTimer(options.getFetchInterval*3600000);
             sendResponse({ success: true });
             break;
         default:
@@ -169,11 +151,11 @@ var fetcher;
 chrome.storage.sync.get(function (storage) {
     options = new Options(storage.tags, storage.fetchLookback, storage.fetchInterval);
     whitelist = new Whitelist(storage.whitelist);
-    chrome.runtime.sendMessage({ action: "whitelistUpdated" });
 });
 
 chrome.storage.local.get(function (storage) {
     blacklist = new Blacklist(storage.blacklist);
+    chrome.runtime.sendMessage({ action: "blacklistUpdated" });
     fetcher = new Fetcher(storage.lastFetch);
     chrome.runtime.sendMessage({ action: "fetchIntervalUpdated" });
 });
