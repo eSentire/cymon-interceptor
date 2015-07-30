@@ -122,6 +122,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                         requests--;
                         if (requests == 0) {
                             chrome.browserAction.setIcon({path:'/images/cymon-icon-19.png'});
+                            fetcher.setLastFetch(new Date().getTime());
                         }
                     });
                 }
@@ -130,7 +131,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             break;
         case "lastFetchUpdated":
         case "fetchIntervalUpdated":
-            fetcher.setFetchTimer(options.getFetchInterval*3600000);
+            fetcher.setFetchTimer(options.getFetchInterval()*3600000);
             sendResponse({ success: true });
             break;
         default:
