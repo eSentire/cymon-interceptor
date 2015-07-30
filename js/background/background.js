@@ -116,6 +116,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                         requests--;
                         if (requests == 0) {
                             chrome.browserAction.setIcon({path:'/images/cymon-icon-19.png'});
+                            fetcher.setLastFetch(new Date().getTime());
                         }
                     }, function(error){
                         requests--;
