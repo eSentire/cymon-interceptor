@@ -1,12 +1,16 @@
 body {
-    font-family: Calibri, Carlito, Arial, sans-serif;
-    background-color: #e8e8e8;
+    font-family: Helvetica, sans-serif;
+    background-color: #1F1B1B;
+    padding-top: 50px;
+    padding-bottom: 50px;
+
 }
 
 .container {
     background-color: white;
     padding-top: 50px;
-    padding-bottom: 150px;
+    padding-bottom: 50px;
+    border-radius: 25px;
 }
 
 img {
@@ -21,4 +25,31 @@ img {
 
 .alert.inline {
     padding: 3px 5px;
+}
+
+
+.line{
+    position: relative;
+    bottom: 20px;
+    display:block;
+    padding-bottom:2px;
+    border:none;
+    color:white;
+    height:1px;
+    background:black;
+    background: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 350, from(#000), to(#fff));
+}
+
+.domains{
+}
+
+.fetch{
+padding-top:100px;
+padding-top:20px;
+}
+/*
+options.html  save settings button
+*/
+.saveSettings{
+padding-top:25px;
 }

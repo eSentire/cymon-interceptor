@@ -33,6 +33,11 @@ function interceptor(details) {
 }
 
 function getUrlPatterns() {
+<<<<<<< HEAD
+    var shortlist = $(['en.wikipedia.org', 'maps.google.com']).not(whitelist.get()).get();
+    //var shortlist = $(blacklist.getBlacklist()).not(whitelist.get()).get(); //Gets the blacklist, minus the whitelist
+=======
+>>>>>>> bd76b6269e361eb1d856e9cdbade2b89594f3dff
     var urlPatterns = [];
     //Gets the blacklist, minus the whitelist, and appends "*://" and "" to create valid URL patterns for Chrome's webRequest API
     $.each($(blacklist.get()).not(whitelist.get()).get(), function(index, domain){
