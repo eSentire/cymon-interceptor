@@ -24,9 +24,11 @@
         };
 
         this.setFetchInterval = function(hours) {
-            var response = chrome.extension.getBackgroundPage().options.setFetchInterval(hours)
-            chrome.runtime.sendMessage({ action: "fetchIntervalUpdated" });
-            return response;
+            return chrome.extension.getBackgroundPage().options.setFetchInterval(hours);
+        };
+
+        this.set = function(options) {
+            return chrome.extension.getBackgroundPage().options.set(options);
         };
     });
 
@@ -51,16 +53,14 @@
 
     app.service('blacklistService', function() {
         this.getLastFetch = function() {
-            return chrome.extension.getBackgroundPage().blacklist.getLastFetch();
+            return chrome.extension.getBackgroundPage().fetcher.getLastFetch();
         };
     });
 
     app.service('redirectService', function() {
-       this.getLastRedirect = function() {
-           var domain = chrome.extension.getBackgroundPage().lastRedirect;
-           chrome.extension.getBackgroundPage().lastRedirect = "";
-           return domain;
-       };
+        this.getRedirectDestination = function() {
+            return decodeURIComponent(new RegExp('\\?dest=([^&?/:;]*)').exec(location.search)[1]);
+        };
     });
 
     app.service('blocklistService', function() {
