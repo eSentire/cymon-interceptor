@@ -34,7 +34,7 @@ function blockingCallback(details) {
 }
 
 function getUrlPatterns() {
-    var shortlist = $(['en.wikipedia.org']).not(whitelist.get()).get();
+    var shortlist = $(['en.wikipedia.org', 'maps.google.com']).not(whitelist.get()).get();
     //var shortlist = $(blacklist.getBlacklist()).not(whitelist.get()).get(); //Gets the blacklist, minus the whitelist
     var urlPatterns = [];
     $.each(shortlist, function(index, domain){

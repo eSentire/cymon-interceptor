@@ -7,14 +7,15 @@
         </li>
     </ul>
 
-    <div>
+    <div class="domains">
         <span>Fetch domains with reports within the last</span>
         <input id="fetchLookback" name="fetchLookback" type="number" ng-model="settingsCtrl.fetchLookback" required max="3" min="1" step="1" pattern="\d*">
         <label for="fetchLookback">day{{settingsCtrl.fetchLookback != 1 ? 's' : ''}}</label>
         <span ng-show="settingsForm.fetchLookback.$invalid" class="alert alert-danger inline">Please enter a whole number from 1 to 3.</span>
     </div>
 
-    <div>
+    <div class="fetch">
+
         <span>Fetch domains from Cymon every </span>
         <input id="fetchInterval" name="fetchInterval" type="number" ng-model="settingsCtrl.fetchInterval" required max="24" min="1" step="1" pattern="\d*">
         <label for="fetchInterval">hour{{settingsCtrl.fetchInterval != 1 ? 's' : ''}}</label>
@@ -26,5 +27,7 @@
         </div>
     </div>
 
-    <button class="btn btn-sm btn-default" ng-disabled="settingsForm.$pristine || settingsForm.$invalid" type="submit" value="Submit">Save Settings</button>
+<div class="saveSettings">
+    <button class="btn btn-sm btn-primary" ng-disabled="settingsForm.$pristine || settingsForm.$invalid" type="submit" value="Submit">Save Settings</button>
+    </div>
 </form>
