@@ -29,7 +29,7 @@ var Blacklist = (function () {
         key: "add",
         value: function add(domains) {
             if (domains.constructor === Array) {
-                this._blacklist = _blacklist.concat(domains);
+                this._blacklist = this._blacklist.concat(domains);
                 chrome.storage.local.set({ blacklist: this._blacklist });
                 chrome.runtime.sendMessage({ action: "blacklistUpdated" });
                 return true;

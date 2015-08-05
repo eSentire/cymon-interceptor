@@ -12,6 +12,11 @@ var Whitelist = (function () {
     }
 
     _createClass(Whitelist, [{
+        key: "get",
+        value: function get() {
+            return this._whitelist;
+        }
+    }, {
         key: "add",
         value: function add(domain) {
             if (this._whitelist.indexOf(domain) == -1) {
