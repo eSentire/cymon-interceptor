@@ -25,11 +25,11 @@ There are 7 tag options for Cymon:
 Each of these tags correspond to a type of event associated with the domains in Cymon's database. For instance, a domain may have an associated event 'malware', meaning a source has reported an instance of malware at that domain. You can select any or all (or none) of these tags.
 
 ### Fetch Lookback
-*1-3 Days*
+**1-3 Days**
 
 Cymon maintains a timeline of events associated with each domain. This field determines how many days you want Cymon to 'look back' for domains with events. If you set this value to 2, then a domain with an event 3 days ago, but no events within the last 2 days, will not appear.
 
 ### Fetch Interval
-*1-24 Hours*
+**1-24 Hours**
 
 Cymon Interceptor will periodically check Cymon for updated information. This value determines how often these checks happen.
