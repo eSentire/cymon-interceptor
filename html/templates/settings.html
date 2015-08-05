@@ -1,5 +1,5 @@
 <form name="settingsForm" ng-submit="settingsForm.$valid && settingsCtrl.save(); settingsForm.$setPristine()" novalidate>
-    <h3>Filters</h3>
+    <h3>Tags</h3>
     <p>Every domain in Cymon's database is associated with one or more of the following tags. You can choose which tags you'd like to look for here. More tags means more information from Cymon.</p>
     <ul class="list-group">
         <li class="list-group-item" ng-repeat="(key, value) in settingsCtrl.tags">
