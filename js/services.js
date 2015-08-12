@@ -4,31 +4,27 @@
     app.service("optionsService", function() {
 
         this.getTags = function() {
-            return chrome.extension.getBackgroundPage().options.getTags();
+            return chrome.extension.getBackgroundPage().fetcher.getTags();
         };
 
         this.setTags = function(tags) {
-            return chrome.extension.getBackgroundPage().options.setTags(tags);
+            return chrome.extension.getBackgroundPage().fetcher.setTags(tags);
         };
 
         this.getFetchLookback = function() {
-            return chrome.extension.getBackgroundPage().options.getFetchLookback();
+            return chrome.extension.getBackgroundPage().fetcher.getFetchLookback();
         };
 
         this.setFetchLookback = function(days) {
-            return chrome.extension.getBackgroundPage().options.setFetchLookback(days);
+            return chrome.extension.getBackgroundPage().fetcher.setFetchLookback(days);
         };
 
         this.getFetchInterval = function() {
-            return chrome.extension.getBackgroundPage().options.getFetchInterval();
+            return chrome.extension.getBackgroundPage().fetcher.getFetchInterval();
         };
 
         this.setFetchInterval = function(hours) {
-            return chrome.extension.getBackgroundPage().options.setFetchInterval(hours);
-        };
-
-        this.set = function(options) {
-            return chrome.extension.getBackgroundPage().options.set(options);
+            return chrome.extension.getBackgroundPage().fetcher.setFetchInterval(hours);
         };
     });
 

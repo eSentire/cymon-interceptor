@@ -96,42 +96,16 @@ chrome.runtime.onInstalled.addListener(function(details){
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     //Deliberate fall-through as each function can be triggered by multiple events
     switch(request.action) {
+        //Refresh Listener
         case "whitelistUpdated":
         case "blacklistUpdated":
             updateListener();
             sendResponse({ success: true });
             break;
-        case "blacklistOptionsUpdated":
-        case "timerTrigger":
-            var fetchLookback = options.getFetchLookback();
-            blacklist.set([]);
-            var requests = 0;
 
-            $.each(options.getTags(), function(tag, enabled) {
-                if (enabled) {
-                    chrome.browserAction.setIcon({path:'/images/cymon-icon-loading-19.png'});
-                    requests++;
-                    fetcher.fetchBlacklistForTag(tag, fetchLookback).then(function(response){
-                        blacklist.add(response);
-                        requests--;
-                        if (requests == 0) {
-                            chrome.browserAction.setIcon({path:'/images/cymon-icon-19.png'});
-                            fetcher.setLastFetch(new Date().getTime());
-                        }
-                    }, function(error){
-                        requests--;
-                        if (requests == 0) {
-                            chrome.browserAction.setIcon({path:'/images/cymon-icon-19.png'});
-                            fetcher.setLastFetch(new Date().getTime());
-                        }
-                    });
-                }
-            });
-            sendResponse({ success: true });
-            break;
-        case "lastFetchUpdated":
-        case "fetchIntervalUpdated":
-            fetcher.setFetchTimer(options.getFetchInterval()*3600000);
+        //Fetch List
+        case "fetchEvent":
+            fetcher.fetchBlacklist(blacklist);
             sendResponse({ success: true });
             break;
         default:
@@ -147,17 +121,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 var whitelist;
 var blacklist;
-var options;
 var fetcher;
 
 chrome.storage.sync.get(function (storage) {
-    options = new Options(storage.tags, storage.fetchLookback, storage.fetchInterval);
+    fetcher = new Fetcher(storage.tags, storage.fetchLookback, storage.fetchInterval, storage.lastFetch);
     whitelist = new Whitelist(storage.whitelist);
 });
 
 chrome.storage.local.get(function (storage) {
     blacklist = new Blacklist(storage.blacklist);
-    chrome.runtime.sendMessage({ action: "blacklistUpdated" });
-    fetcher = new Fetcher(storage.lastFetch);
-    chrome.runtime.sendMessage({ action: "fetchIntervalUpdated" });
 });
