@@ -1,3 +1,3 @@
-(function () {
-    var app = angular.module("options", ['optionsDirectives']);
+(function() {
+    var app = angular.module("options", ["optionsDirectives"]);
 })();

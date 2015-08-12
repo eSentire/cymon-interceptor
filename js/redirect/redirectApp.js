@@ -1,3 +1,3 @@
-(function () {
-    var app = angular.module("domain" , ['redirectDirectives']);
+(function() {
+    var app = angular.module("domain" , ["redirectDirectives"]);
 })();

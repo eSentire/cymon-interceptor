@@ -5,10 +5,12 @@ var _createClass = (function () { function defineProperties(target, props) { for
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Blacklist = (function () {
-    function Blacklist(blacklist) {
+    function Blacklist() {
+        var blacklist = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+
         _classCallCheck(this, Blacklist);
 
-        this._blacklist = blacklist || [];
+        this._blacklist = blacklist;
     }
 
     _createClass(Blacklist, [{
@@ -19,53 +21,26 @@ var Blacklist = (function () {
     }, {
         key: "set",
         value: function set(blacklist) {
-            if (blacklist.constructor === Array) {
+            if (blacklist && blacklist.constructor === Array) {
                 this._blacklist = blacklist;
+                chrome.storage.local.set({ blacklist: this._blacklist });
+                chrome.runtime.sendMessage({ action: "blacklistUpdated" });
+            } else {
+                throw new Error("Invalid value for 'blacklist'; expected an array of strings representing the new blacklist.");
             }
-            chrome.storage.local.set({ blacklist: this._blacklist });
-            chrome.runtime.sendMessage({ action: "blacklistUpdated" });
         }
     }, {
         key: "add",
         value: function add(domains) {
-            if (domains.constructor === Array) {
+            if (domains && domains.constructor === Array) {
                 this._blacklist = this._blacklist.concat(domains);
                 chrome.storage.local.set({ blacklist: this._blacklist });
                 chrome.runtime.sendMessage({ action: "blacklistUpdated" });
-                return true;
             } else {
-                return false;
+                throw new Error("Invalid value for 'domains'; expected an array of strings representing domains to add to the blacklist.");
             }
         }
     }]);
 
     return Blacklist;
 })();
-
-
-//function Blacklist(blacklist) {
-//    var _blacklist = blacklist || [];
-//
-//    this.get = function () {
-//        return _blacklist;
-//    };
-//
-//    this.set = function (blacklist) {
-//        if (blacklist.constructor === Array) {
-//            _blacklist = blacklist;
-//        }
-//        chrome.storage.local.set({blacklist: _blacklist});
-//        chrome.runtime.sendMessage({ action: "blacklistUpdated" });
-//    };
-//
-//    this.add = function (domains) {
-//        if (domains.constructor === Array) {
-//            _blacklist = _blacklist.concat(domains);
-//            chrome.storage.local.set({blacklist: _blacklist});
-//            chrome.runtime.sendMessage({ action: "blacklistUpdated" });
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    };
-//}

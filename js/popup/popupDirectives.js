@@ -1,14 +1,14 @@
 (function() {
-    var app = angular.module('popupDirectives', ['services'])
+    var app = angular.module("popupDirectives", ["services"])
 
-    app.directive('blocklist', function(){
+    app.directive("blocklist", function(){
         return {
             restrict: "E",
             templateUrl: "/html/templates/blocklist.html",
-            controller: ['$scope', 'blocklistService', 'whitelistService', function($scope, blocklistService, whitelistService){
+            controller: ["$scope", "blocklistService", "whitelistService", function($scope, blocklistService, whitelistService){
                 var list = this;
                 list.domains = [];
-                blocklistService.getBlocklist(function (response) {
+                blocklistService.getBlocklist(function(response) {
                     if (response && response.success) {
                         list.domains = response.blocklist;
                         $scope.$apply();
@@ -29,7 +29,11 @@
                             alert("Error: " + domain + " is already in your whitelist")
                         }
                     }
-                }
+                };
+
+                this.viewDetails = function(domain) {
+                    blocklistService.viewDetails(domain);
+                };
 
             }],
             controllerAs: "blocklistCtrl"

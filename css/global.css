@@ -1,20 +1,17 @@
 body {
     font-family: Helvetica, sans-serif;
-    background-color: #1F1B1B;
-    padding-top: 50px;
-    padding-bottom: 50px;
-
-}
-
-.container {
-    background-color: white;
-    padding-top: 50px;
-    padding-bottom: 50px;
-    border-radius: 25px;
+    background-color: #1f1b1b;
+    padding: 50px 0;
 }
 
 img {
     max-width: 100%;
+}
+
+.container {
+    background-color: white;
+    padding: 50px 0;
+    border-radius: 25px;
 }
 
 .sub {
@@ -23,33 +20,36 @@ img {
     font-size: 0.9em;
 }
 
+.setting {
+    border: 1px solid transparent;
+    margin: 0 -5px 5px -5px;
+    padding: 6px 4px 4px;
+}
+
+.error {
+    border: 1px solid #c80000;
+    color: #c80000;
+    border-radius: 5px;
+}
+
+.error .error-help {
+    font-weight: bold;
+}
+
+.error .error-help:before {
+    content: "| ";
+}
+
 .alert.inline {
     padding: 3px 5px;
 }
 
-
-.line{
-    position: relative;
-    bottom: 20px;
-    display:block;
-    padding-bottom:2px;
-    border:none;
-    color:white;
-    height:1px;
+.line {
+    height:2px;
     background:black;
-    background: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 350, from(#000), to(#fff));
+    background: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 350, from(rgba(0,0,0,100)), to(rgba(0,0,0,0)));
 }
 
-.domains{
-}
-
-.fetch{
-padding-top:100px;
-padding-top:20px;
-}
-/*
-options.html  save settings button
-*/
-.saveSettings{
-padding-top:25px;
+.saveSettings {
+    padding-top:25px;
 }

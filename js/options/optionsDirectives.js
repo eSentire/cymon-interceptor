@@ -1,14 +1,14 @@
-(function () {
-    var app = angular.module("optionsDirectives", ['services']);
+(function() {
+    var app = angular.module("optionsDirectives", ["services"]);
 
-    app.directive('whitelist', function() {
+    app.directive("whitelist", function() {
         return {
             restrict: "E",
             templateUrl: "/html/templates/whitelist.html",
-            controller: ['whitelistService', function (whitelistService) {
+            controller: ["whitelistService", function(whitelistService) {
                 this.domains = whitelistService.getWhitelist();
 
-                this.removeFromWhitelist = function (domain) {
+                this.removeFromWhitelist = function(domain) {
                     if (confirm("Are you sure you want to remove " + domain + " from your whitelist?")) {
                         if (whitelistService.removeFromWhitelist(domain)) {
                             this.setEnabled(false);
@@ -18,22 +18,22 @@
                     }
                 };
 
-                this.clearWhitelist = function () {
+                this.clearWhitelist = function() {
                     if (confirm("Are you sure you want to clear your whitelist? This action cannot be undone!")) {
                         whitelistService.clearWhitelist();
                         this.domains = whitelistService.getWhitelist();
                     }
                 }
             }],
-            controllerAs: 'whitelistCtrl'
+            controllerAs: "whitelistCtrl"
         }
     });
 
-    app.directive('settings', function() {
+    app.directive("settings", function() {
         return {
             restrict: "E",
             templateUrl: "/html/templates/settings.html",
-            controller: ['optionsService', 'blacklistService', function(optionsService, blacklistService) {
+            controller: ["optionsService", "blacklistService", function(optionsService, blacklistService) {
                 this.tags = optionsService.getTags();
                 this.fetchLookback = optionsService.getFetchLookback();
                 this.fetchInterval = optionsService.getFetchInterval();
@@ -55,9 +55,9 @@
         }
     });
 
-    app.filter('trim', function () {
-        return function (value) {
-            return (!value) ? '' : value.replace(/ /g, '');
+    app.filter("trim", function() {
+        return function(value) {
+            return (!value) ? "" : value.replace(/ /g, "");
         };
     });
 })();

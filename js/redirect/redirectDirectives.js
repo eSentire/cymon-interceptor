@@ -1,10 +1,11 @@
-(function(){
-    var app = angular.module('redirectDirectives', ['services'])
-    app.directive('redirectDomain', function() {
+(function() {
+    var app = angular.module("redirectDirectives", ["services"]);
+
+    app.directive("redirectDomain", function() {
         return {
-            restrict: 'E',
-            templateUrl: '/html/templates/redirectDomain.html',
-            controller: ['redirectService', 'whitelistService', function (redirectService, whitelistService) {
+            restrict: "E",
+            templateUrl: "/html/templates/redirectDomain.html",
+            controller: ["redirectService", "whitelistService", "blocklistService", function (redirectService, whitelistService, blocklistService) {
                 this.domain = redirectService.getRedirectDestination();
 
                 this.whitelistDomain = function() {
@@ -14,9 +15,13 @@
                         }
                     }
                     this.domain = "";
-                }
+                };
+
+                this.viewDetails = function() {
+                    blocklistService.viewDetails(this.domain);
+                };
             }],
-            controllerAs: 'redirectCtrl'
+            controllerAs: "redirectCtrl"
         }
     })
 })();

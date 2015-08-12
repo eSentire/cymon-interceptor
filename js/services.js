@@ -1,7 +1,7 @@
 (function() {
     var app = angular.module("services", []);
 
-    app.service('optionsService', function() {
+    app.service("optionsService", function() {
 
         this.getTags = function() {
             return chrome.extension.getBackgroundPage().options.getTags();
@@ -32,7 +32,7 @@
         };
     });
 
-    app.service('whitelistService', ['$rootScope', function($rootScope) {
+    app.service("whitelistService", ["$rootScope", function($rootScope) {
         this.addToWhitelist = function (domain) {
             return chrome.extension.getBackgroundPage().whitelist.add(domain);
         };
@@ -51,19 +51,19 @@
         };
     }]);
 
-    app.service('blacklistService', function() {
+    app.service("blacklistService", function() {
         this.getLastFetch = function() {
             return chrome.extension.getBackgroundPage().fetcher.getLastFetch();
         };
     });
 
-    app.service('redirectService', function() {
+    app.service("redirectService", function() {
         this.getRedirectDestination = function() {
-            return decodeURIComponent(new RegExp('\\?dest=([^&?/:;]*)').exec(location.search)[1]);
+            return decodeURIComponent(new RegExp("\\?dest=([^&?/:;]*)").exec(location.search)[1]);
         };
     });
 
-    app.service('blocklistService', function() {
+    app.service("blocklistService", function() {
         this.getBlocklist = function (callback) {
             chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
                 chrome.tabs.sendMessage(
@@ -90,6 +90,10 @@
                     }
                 );
             });
+        };
+
+        this.viewDetails = function (domain) {
+            chrome.tabs.create({ url: "http://cymoncommunity-dev-wartenuq33.elasticbeanstalk.com/domain/" + encodeURIComponent(domain) })
         };
     });
 })();
