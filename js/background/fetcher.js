@@ -39,8 +39,12 @@ var Fetcher = (function () {
                 request.onload = function () {
                     if (request.status == 200) {
                         var domains = [];
+                        var re = /[^.]+\.[^.]+$/;
+                        var match;
+
                         $.each(JSON.parse(request.response).results, function (index, domain) {
-                            domains.push(domain.name);
+                            match = re.exec(domain.name);
+                            domains.push(match ? match[0] : domain.name);
                         });
                         resolve(domains);
                     } else {
@@ -68,15 +72,13 @@ var Fetcher = (function () {
             });
 
             if (tags.length) {
-                chrome.browserAction.setIcon({ path: "/images/cymon-icon-loading-19.png" });
-
                 fetcher = this;
                 $.each(tags, function (index, tag) {
                     fetcher.fetchBlacklistForTag(tag).then(function (response) {
                         blacklist.add(response);
+                        chrome.runtime.sendMessage({ action: "blacklistUpdated" });
                     });
                 });
-                chrome.browserAction.setIcon({ path: "/images/cymon-icon-19.png" });
                 this.setLastFetch(new Date().getTime());
             }
         }

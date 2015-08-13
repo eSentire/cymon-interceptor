@@ -25,22 +25,35 @@ var Blacklist = (function () {
                 this._blacklist = blacklist;
                 chrome.storage.local.set({ blacklist: this._blacklist });
                 chrome.runtime.sendMessage({ action: "blacklistUpdated" });
+                return true;
             } else {
-                throw new Error("Invalid value for 'blacklist'; expected an array of strings representing the new blacklist.");
+                //throw new Error("Invalid value for 'blacklist'; expected an array of strings representing the new blacklist.");
+                return false;
             }
         }
     }, {
         key: "add",
         value: function add(domains) {
             if (domains && domains.constructor === Array) {
-                this._blacklist = this._blacklist.concat(domains);
+                var blacklistHash = {};
+                $.each(this._blacklist, function (index, domain) {
+                    blacklistHash[domain] = true;
+                });
+                $.each(domains, function (index, domain) {
+                    blacklistHash[domain] = true;
+                });
+
+                this._blacklist = Object.keys(blacklistHash);
                 chrome.storage.local.set({ blacklist: this._blacklist });
                 chrome.runtime.sendMessage({ action: "blacklistUpdated" });
+                return true;
             } else {
-                throw new Error("Invalid value for 'domains'; expected an array of strings representing domains to add to the blacklist.");
+                //throw new Error("Invalid value for 'domains'; expected an array of strings representing domains to add to the blacklist.");
+                return false;
             }
         }
     }]);
 
     return Blacklist;
 })();
+

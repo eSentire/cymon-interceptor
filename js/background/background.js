@@ -2,33 +2,42 @@
 ***********************************Functions***********************************
 ******************************************************************************/
 function interceptor(details) {
-    chrome.tabs.sendMessage(
-        details.tabId,
-        {
-            action: "addToBlocklist",
-            domain: new URL(details.url).hostname
-        },
-        function(response) {
-            if (response && response.success) {
-                chrome.browserAction.setBadgeText({
-                    text: response.blocklist.length ? response.blocklist.length.toString() : "",
-                    tabId: details.tabId
-                });
-                if (!response.notified) {
-                    chrome.notifications.create({
-                        type: "basic",
-                        title: "Malicious request blocked",
-                        iconUrl: "/images/cymon-icon.png",
-                        message: "A web request on this page was deemed malicious by Cymon and has been blocked"
+    var re = /[^.]+\.[^.]+$/;
+    var domain = new URL(details.url).hostname;
+    var match = re.exec(domain);
+    if (match) {
+        domain = match[0];
+    }
+
+    if (details.tabId) {
+        chrome.tabs.sendMessage(
+            details.tabId,
+            {
+                action: "addToBlocklist",
+                domain: domain
+            },
+            function (response) {
+                if (response && response.success) {
+                    chrome.browserAction.setBadgeText({
+                        text: response.blocklist.length ? response.blocklist.length.toString() : "",
+                        tabId: details.tabId
                     });
+                    if (!response.notified) {
+                        chrome.notifications.create({
+                            type: "basic",
+                            title: "Malicious request blocked",
+                            iconUrl: "/images/cymon-icon.png",
+                            message: "A web request on this page was deemed malicious by Cymon and has been blocked"
+                        });
+                    }
                 }
             }
+        );
+        if (details.type == "main_frame") {
+            return {redirectUrl: chrome.extension.getURL("/html/redirectPage.html?dest=" + encodeURIComponent(domain))};
+        } else {
+            return {cancel: true};
         }
-    );
-    if (details.type == "main_frame") {
-        return { redirectUrl: chrome.extension.getURL("/html/redirectPage.html?dest=" + encodeURIComponent(new URL(details.url).hostname)) };
-    } else {
-        return { cancel: true };
     }
 }
 
@@ -36,7 +45,7 @@ function getUrlPatterns() {
     var urlPatterns = [];
     //Gets the blacklist, minus the whitelist, and appends "*://" and "" to create valid URL patterns for Chrome's webRequest API
     $.each($(blacklist.get()).not(whitelist.get()).get(), function(index, domain){
-        urlPatterns.push("*://" + domain + "/*");
+        urlPatterns.push("*://*." + domain + "/*");
     });
     return urlPatterns;
 }
@@ -130,4 +139,5 @@ chrome.storage.sync.get(function (storage) {
 
 chrome.storage.local.get(function (storage) {
     blacklist = new Blacklist(storage.blacklist);
+    chrome.runtime.sendMessage({ action: "blacklistUpdated" });
 });

@@ -11,10 +11,10 @@
                 this.whitelistDomain = function() {
                     if (confirm("Are you sure you want to whitelist " + this.domain + "? This domain could be potentially harmful to your system.")) {
                         if (!whitelistService.addToWhitelist(this.domain)) {
-                            alert("Error: " + this.domain + " is already in your whitelist")
+                            alert("Error: " + this.domain + " is already in your whitelist.")
                         }
+                        this.domain = "";
                     }
-                    this.domain = "";
                 };
 
                 this.viewDetails = function() {
