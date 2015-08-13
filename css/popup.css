@@ -1,55 +1,19 @@
 body {
+    padding: 1px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.container {
+    border-radius: 0;
+    padding: 0 20px 20px;
+
     min-width: 250px;
-    min-height:350px;
-    margin: 0px;
-    font-family: Segoe UI, Arial, sans-serif;
-    font-size: 13px;
-    color: #545454;
-    background-color: #f8f6f2;
 }
 
-.cymon-title {
-    padding-left: 20px;
-    margin-top: -40px;
-    font-weight: bold;
-}
-
-footer {
-    cursor: pointer;
-    padding: 10px 35px;
-    border-top: 1px solid #e1ddd8;
-    background-image: url("/images/background-main.png");
-    bottom: 0px;
-    position: Fixed;
-    width: 100%;
-}
-
-header{
-    cursor: pointer;
-    padding: 10px 35px;
-    border-top: 1px solid #e1ddd8;
-    background-image: url("/images/background-main.png");
-    top:0px;
-    position: fixed;
-    width: 100%;
-}
-
-.text-success {
-    color: #3c763d;
-    font-family: Segoe UI, Arial, sans-serif;
-    font-size: 15px;
-    padding-top: 20px;
-    padding-left: 20px
-}
-
-.line1 {
-    position: relative;
-    bottom: 20px;
-    display: block;
-    padding-bottom: 2px;
-    border: none;
-    color: white;
-    background: black;
-    background: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 350, from(#6F6060), to(#fff));
-    top: 158px;
+table {
+    text-align: left;
+    white-space: nowrap;
 }

@@ -1,6 +1,7 @@
 <form name="settingsForm" ng-submit="settingsForm.$valid && settingsCtrl.save(); settingsForm.$setPristine()" novalidate>
     <h3>Tags</h3>
     <p>Every domain in Cymon's database is associated with one or more of the following tags. You can choose which tags you'd like to look for here. More tags means more information from Cymon.</p>
+    <p class="sub important">Note: checking many of these tags at once will cause Cymon Interceptor to ingest a large number of domains from Cymon and may lead to performance issues.</p>
     <ul class="list-group">
         <li class="list-group-item" ng-repeat="(key, value) in settingsCtrl.tags">
             <input id="checkbox{{key | trim}}" name="checkbox{{key | trim}}" type="checkbox" ng-model="settingsCtrl.tags[key]"> <label for="checkbox{{key | trim}}">{{key}}</label>
@@ -26,7 +27,7 @@
         </div>
     </div>
 
-<div class="saveSettings">
+<div class="save-settings">
     <button class="btn btn-sm btn-primary" ng-disabled="settingsForm.$pristine || settingsForm.$invalid" type="submit" value="Submit">Save Settings</button>
     </div>
 </form>

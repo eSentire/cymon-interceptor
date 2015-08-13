@@ -26,6 +26,10 @@ img {
     padding: 6px 4px 4px;
 }
 
+.important {
+    color: #c80000;
+}
+
 .error {
     border: 1px solid #c80000;
     color: #c80000;
@@ -40,16 +44,13 @@ img {
     content: "| ";
 }
 
-.alert.inline {
-    padding: 3px 5px;
-}
-
 .line {
+    margin: 0 -20px;
     height:2px;
-    background:black;
-    background: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 350, from(rgba(0,0,0,100)), to(rgba(0,0,0,0)));
+    background: #ffffff;
+    background: -webkit-linear-gradient(left, rgba(0,0,0,0) 0%, #000000 10%, rgba(0,0,0,0) 100%);
 }
 
-.saveSettings {
-    padding-top:25px;
+.save-settings {
+    padding-top: 25px;
 }
