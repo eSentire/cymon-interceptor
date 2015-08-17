@@ -1,17 +1,10 @@
 body {
-    font-family: Helvetica, sans-serif;
+    font-family: Carlito, sans-serif;
     background-color: #1f1b1b;
-    padding: 50px 0;
-}
-
-img {
-    max-width: 100%;
 }
 
 .container {
     background-color: white;
-    padding: 50px 0;
-    border-radius: 25px;
 }
 
 .sub {
@@ -20,37 +13,6 @@ img {
     font-size: 0.9em;
 }
 
-.setting {
-    border: 1px solid transparent;
-    margin: 0 -5px 5px -5px;
-    padding: 6px 4px 4px;
-}
-
-.important {
+.important, .error {
     color: #c80000;
-}
-
-.error {
-    border: 1px solid #c80000;
-    color: #c80000;
-    border-radius: 5px;
-}
-
-.error .error-help {
-    font-weight: bold;
-}
-
-.error .error-help:before {
-    content: "| ";
-}
-
-.line {
-    margin: 0 -20px;
-    height:2px;
-    background: #ffffff;
-    background: -webkit-linear-gradient(left, rgba(0,0,0,0) 0%, #000000 10%, rgba(0,0,0,0) 100%);
-}
-
-.save-settings {
-    padding-top: 25px;
 }
