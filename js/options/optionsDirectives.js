@@ -10,9 +10,7 @@
 
                 this.removeFromWhitelist = function(domain) {
                     if (confirm("Are you sure you want to remove " + domain + " from your whitelist?")) {
-                        if (whitelistService.removeFromWhitelist(domain)) {
-                            this.setEnabled(false);
-                        } else {
+                        if (!whitelistService.removeFromWhitelist(domain)) {
                             alert("Error: " + domain + " could not be found in the whitelist.");
                         }
                     }

@@ -55,7 +55,13 @@
 
     app.service("redirectService", function() {
         this.getRedirectDestination = function() {
-            return decodeURIComponent(new RegExp("\\?dest=([^&?/:;]*)").exec(location.search)[1]);
+            var redirectUrl = decodeURIComponent(new RegExp("\\?url=([^&?/:;]*)").exec(location.search)[1]);
+            var redirectDomain = new URL(redirectUrl).hostname;
+
+            return {
+                url: redirectUrl,
+                domain: redirectDomain
+            }
         };
     });
 

@@ -39,12 +39,9 @@ var Fetcher = (function () {
                 request.onload = function () {
                     if (request.status == 200) {
                         var domains = [];
-                        var re = /[^.]+\.[^.]+$/;
-                        var match;
 
                         $.each(JSON.parse(request.response).results, function (index, domain) {
-                            match = re.exec(domain.name);
-                            domains.push(match ? match[0] : domain.name);
+                            domains.push(domain.name);
                         });
                         resolve(domains);
                     } else {
@@ -76,7 +73,7 @@ var Fetcher = (function () {
                 $.each(tags, function (index, tag) {
                     fetcher.fetchBlacklistForTag(tag).then(function (response) {
                         blacklist.add(response);
-                        chrome.runtime.sendMessage({ action: "blacklistUpdated" });
+                        chrome.runtime.sendMessage({ action: "updateEvent" });
                     });
                 });
                 this.setLastFetch(new Date().getTime());

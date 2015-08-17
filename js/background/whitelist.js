@@ -22,7 +22,7 @@ var Whitelist = (function () {
             if (this._whitelist.indexOf(domain) == -1) {
                 this._whitelist.push(domain);
                 chrome.storage.sync.set({ whitelist: this._whitelist });
-                chrome.runtime.sendMessage({ action: "whitelistUpdated" });
+                chrome.runtime.sendMessage({ action: "updateEvent" });
                 return true;
             } else {
                 return false;
@@ -35,7 +35,7 @@ var Whitelist = (function () {
             if (index != -1) {
                 this._whitelist.splice(index, 1);
                 chrome.storage.sync.set({ whitelist: this._whitelist });
-                chrome.runtime.sendMessage({ action: "whitelistUpdated" });
+                chrome.runtime.sendMessage({ action: "updateEvent" });
                 return true;
             } else {
                 return false;
@@ -46,7 +46,7 @@ var Whitelist = (function () {
         value: function clear() {
             this._whitelist = [];
             chrome.storage.sync.set({ whitelist: [] });
-            chrome.runtime.sendMessage({ action: "whitelistUpdated" });
+            chrome.runtime.sendMessage({ action: "updateEvent" });
         }
     }]);
 

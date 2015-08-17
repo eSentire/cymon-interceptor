@@ -2,12 +2,7 @@
 ***********************************Functions***********************************
 ******************************************************************************/
 function interceptor(details) {
-    var re = /[^.]+\.[^.]+$/;
     var domain = new URL(details.url).hostname;
-    var match = re.exec(domain);
-    if (match) {
-        domain = match[0];
-    }
 
     if (details.tabId) {
         chrome.tabs.sendMessage(
@@ -34,9 +29,9 @@ function interceptor(details) {
             }
         );
         if (details.type == "main_frame") {
-            return {redirectUrl: chrome.extension.getURL("/html/redirectPage.html?dest=" + encodeURIComponent(domain))};
+            return { redirectUrl: chrome.extension.getURL("/html/redirectPage.html?url=" + encodeURIComponent(details.url)) };
         } else {
-            return {cancel: true};
+            return { cancel: true };
         }
     }
 }
@@ -45,7 +40,7 @@ function getUrlPatterns() {
     var urlPatterns = [];
     //Gets the blacklist, minus the whitelist, and appends "*://" and "" to create valid URL patterns for Chrome's webRequest API
     $.each($(blacklist.get()).not(whitelist.get()).get(), function(index, domain){
-        urlPatterns.push("*://*." + domain + "/*");
+        urlPatterns.push("*://" + domain + "/*");
     });
     return urlPatterns;
 }
@@ -103,11 +98,9 @@ chrome.runtime.onInstalled.addListener(function(details){
 });
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    //Deliberate fall-through as each function can be triggered by multiple events
     switch(request.action) {
         //Refresh Listener
-        case "whitelistUpdated":
-        case "blacklistUpdated":
+        case "updateEvent":
             updateListener();
             sendResponse({ success: true });
             break;
@@ -117,6 +110,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             fetcher.fetchBlacklist(blacklist);
             sendResponse({ success: true });
             break;
+
         default:
             sendResponse({ success: false });
             break;
@@ -139,5 +133,5 @@ chrome.storage.sync.get(function (storage) {
 
 chrome.storage.local.get(function (storage) {
     blacklist = new Blacklist(storage.blacklist);
-    chrome.runtime.sendMessage({ action: "blacklistUpdated" });
+    chrome.runtime.sendMessage({ action: "updateEvent" });
 });
