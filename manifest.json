@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Cymon Interceptor",
   "description": "Intercept web requests to malicious sources",
-  "version": "0.4",
+  "version": "0.5",
   "icons": {
     "16": "images/cymon-icon-16.png",
     "48": "images/cymon-icon-48.png",

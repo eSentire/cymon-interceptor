@@ -1,15 +1,19 @@
-class Whitelist {
-    constructor(whitelist = []) {
-        this._whitelist = whitelist;
+export var Whitelist = (function() {
+    var _whitelist = [];
+
+    chrome.storage.sync.get(function (storage) {
+        _whitelist = storage.whitelist || _whitelist;
+    });
+
+    function get() {
+        return _whitelist;
     }
-    get() {
-        return this._whitelist;
-    }
-    add(domain) {
+
+    function add(domain) {
         if (typeof domain == "string") {
-            if (this._whitelist.indexOf(domain) == -1) {
-                this._whitelist.push(domain);
-                chrome.storage.sync.set({whitelist: this._whitelist});
+            if (_whitelist.indexOf(domain) == -1) {
+                _whitelist.push(domain);
+                chrome.storage.sync.set({whitelist: _whitelist});
                 chrome.runtime.sendMessage({action: "updateEvent"});
                 return true;
             } else {
@@ -20,12 +24,13 @@ class Whitelist {
             return false;
         }
     }
-    remove(domain) {
+
+    function remove(domain) {
         if (typeof domain == "string") {
-            var index = this._whitelist.indexOf(domain)
+            var index = _whitelist.indexOf(domain)
             if (index != -1) {
-                this._whitelist.splice(index, 1);
-                chrome.storage.sync.set({whitelist: this._whitelist});
+                _whitelist.splice(index, 1);
+                chrome.storage.sync.set({whitelist: _whitelist});
                 chrome.runtime.sendMessage({action: "updateEvent"});
                 return true;
             } else {
@@ -36,10 +41,18 @@ class Whitelist {
             return false;
         }
     }
-    clear() {
-        this._whitelist = [];
-        chrome.storage.sync.set({ whitelist: [] });
-        chrome.runtime.sendMessage({ action: "updateEvent" });
+
+    function clear() {
+        _whitelist = [];
+        chrome.storage.sync.set({whitelist: []});
+        chrome.runtime.sendMessage({action: "updateEvent"});
         return true;
     }
-}
+
+    return {
+        get: get,
+        add: add,
+        remove: remove,
+        clear: clear
+    };
+})();
