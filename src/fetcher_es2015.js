@@ -13,6 +13,7 @@ export default (function() {
     var _lastFetch = 0;
 
     var _timeout = 0;
+    var _timestamp = 0;
 
     chrome.storage.sync.get(function (storage) {
         _tags = storage.tags || _tags;
@@ -21,14 +22,14 @@ export default (function() {
         _lastFetch = storage.lastFetch || _lastFetch;
     });
 
-    function fetchBlacklistForTag(tag) {
+    function fetchBlacklistForTag(tag, timestamp) {
         return new Promise(function (resolve, reject) {
             var request = new XMLHttpRequest();
+
             request.open(
                 "GET",
                 `http://cymoncommunity-dev-wartenuq33.elasticbeanstalk.com/api/nexus/v1/blacklist/domain/${encodeURIComponent(tag)}/?days=${encodeURIComponent(_fetchLookback)}&limit=25000`
-                )
-            ;
+            );
 
             request.onload = function () {
                 if (request.status == 200) {
@@ -37,7 +38,10 @@ export default (function() {
                     $.each(JSON.parse(request.response).results, function (index, domain) {
                         domains.push(domain.name);
                     });
-                    resolve(domains);
+                    resolve({
+                        domains: domains,
+                        timestamp: timestamp
+                    });
                 } else {
                     reject(Error(request.statusText));
                 }
@@ -62,10 +66,13 @@ export default (function() {
         });
 
         if (tags.length) {
+            _timestamp = new Date().getTime();
             $.each(tags, function (index, tag) {
-                fetchBlacklistForTag(tag).then(function (response) {
-                    blacklist.add(response);
-                    chrome.runtime.sendMessage({action: "updateEvent"});
+                fetchBlacklistForTag(tag, _timestamp).then(function (response) {
+                    if (response.timestamp == _timestamp) {
+                        blacklist.add(response.domains);
+                        chrome.runtime.sendMessage({action: "updateEvent"});
+                    }
                 });
             });
             this.setLastFetch(new Date().getTime());
