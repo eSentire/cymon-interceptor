@@ -16,7 +16,7 @@ var app = {
     function interceptor(details) {
         var domain = new URL(details.url).hostname;
 
-        if (details.tabId) {
+        if (details.tabId >= 0) {
             chrome.tabs.sendMessage(
                 details.tabId,
                 {
