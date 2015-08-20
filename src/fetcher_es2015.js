@@ -1,4 +1,4 @@
-export var Fetcher = (function() {
+export default (function() {
     var _tags = {
         "blacklist": false,
         "botnet": false,

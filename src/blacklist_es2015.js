@@ -1,4 +1,4 @@
-export var Blacklist = (function() {
+export default (function() {
     var _blacklist = [];
 
     chrome.storage.local.get(function (storage) {

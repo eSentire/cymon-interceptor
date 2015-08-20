@@ -1,4 +1,4 @@
-export var Whitelist = (function() {
+export default (function() {
     var _whitelist = [];
 
     chrome.storage.sync.get(function (storage) {

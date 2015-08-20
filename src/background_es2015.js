@@ -1,10 +1,12 @@
-import { Blacklist } from "./blacklist_es2015";
-import { Fetcher } from "./fetcher_es2015.js";
-import { Whitelist } from "./whitelist_es2015.js";
+import Blacklist from "./blacklist_es2015";
+import Fetcher from "./fetcher_es2015.js";
+import Whitelist from "./whitelist_es2015.js";
 
-export var blacklist = Blacklist;
-export var whitelist = Whitelist;
-export var fetcher = Fetcher;
+var app = {
+    blacklist: Blacklist,
+    whitelist: Whitelist,
+    fetcher: Fetcher
+};
 
 (function (blacklist, whitelist, fetcher) {
     /******************************************************************************
@@ -101,4 +103,6 @@ export var fetcher = Fetcher;
         }
     });
 
-})(blacklist, whitelist, fetcher);
+})(app.blacklist, app.whitelist, app.fetcher);
+
+window.app = app;

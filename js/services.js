@@ -1,55 +1,56 @@
 (function() {
     var app = angular.module("services", []);
+    var backgroundApp = chrome.extension.getBackgroundPage().app;
 
     app.service("optionsService", function() {
 
         this.getTags = function() {
-            return chrome.extension.getBackgroundPage().fetcher.getTags();
+            return backgroundApp.fetcher.getTags();
         };
 
         this.setTags = function(tags) {
-            return chrome.extension.getBackgroundPage().fetcher.setTags(tags);
+            return backgroundApp.fetcher.setTags(tags);
         };
 
         this.getFetchLookback = function() {
-            return chrome.extension.getBackgroundPage().fetcher.getFetchLookback();
+            return backgroundApp.fetcher.getFetchLookback();
         };
 
         this.setFetchLookback = function(days) {
-            return chrome.extension.getBackgroundPage().fetcher.setFetchLookback(days);
+            return backgroundApp.fetcher.setFetchLookback(days);
         };
 
         this.getFetchInterval = function() {
-            return chrome.extension.getBackgroundPage().fetcher.getFetchInterval();
+            return backgroundApp.fetcher.getFetchInterval();
         };
 
         this.setFetchInterval = function(hours) {
-            return chrome.extension.getBackgroundPage().fetcher.setFetchInterval(hours);
+            return backgroundApp.fetcher.setFetchInterval(hours);
         };
     });
 
     app.service("whitelistService", ["$rootScope", function($rootScope) {
         this.addToWhitelist = function (domain) {
-            return chrome.extension.getBackgroundPage().whitelist.add(domain);
+            return backgroundApp.whitelist.add(domain);
         };
 
         this.removeFromWhitelist = function (domain) {
-            return chrome.extension.getBackgroundPage().whitelist.remove(domain);
+            return backgroundApp.whitelist.remove(domain);
         };
 
         this.clearWhitelist = function () {
-            chrome.extension.getBackgroundPage().whitelist.clear();
+            backgroundApp.whitelist.clear();
             $rootScope.$broadcast("whitelistCleared");
         };
 
         this.getWhitelist = function () {
-            return chrome.extension.getBackgroundPage().whitelist.get();
+            return backgroundApp.whitelist.get();
         };
     }]);
 
     app.service("blacklistService", function() {
         this.getLastFetch = function() {
-            return chrome.extension.getBackgroundPage().fetcher.getLastFetch();
+            return backgroundApp.fetcher.getLastFetch();
         };
     });
 
