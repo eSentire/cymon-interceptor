@@ -1,3 +1,7 @@
+/**
+ * @module Whitelist
+ * Maintains the list of domains Cymon has deemed malicious but which the user wishes to allow anyway.
+ */
 export default (function() {
     var _whitelist = [];
 
@@ -5,26 +9,41 @@ export default (function() {
         _whitelist = storage.whitelist || _whitelist;
     });
 
+    /**
+     * @function get
+     * Returns a copy of the whitelist.
+     *
+     * @returns {[]}: An array of strings representing the whitelist.
+     */
     function get() {
-        return _whitelist;
+        return JSON.parse(JSON.stringify(_whitelist));
     }
 
+    /**
+     * @function add
+     * Adds an individual domain to the whitelist.
+     *
+     * @param domain: A string representing the domain to be added.
+     * @returns {boolean}: true if successful, false if the value for domain is invalid or if the domain is already in the whitelist.
+     */
     function add(domain) {
-        if (typeof domain == "string") {
-            if (_whitelist.indexOf(domain) == -1) {
-                _whitelist.push(domain);
-                chrome.storage.sync.set({whitelist: _whitelist});
-                chrome.runtime.sendMessage({action: "updateEvent"});
-                return true;
-            } else {
-                return false;
-            }
+        if (typeof domain == "string" && _whitelist.indexOf(domain) == -1) {
+            _whitelist.push(domain);
+            chrome.storage.sync.set({whitelist: _whitelist});
+            chrome.runtime.sendMessage({action: "updateEvent"});
+            return true;
         } else {
-            //throw new Error("Invalid value for 'domain'; expected a string representing the domain to add to the whitelist.");
             return false;
         }
     }
 
+    /**
+     * @function remove
+     * Removes an individual domain from the whitelist.
+     *
+     * @param domain: A string representing the domain to be removed.
+     * @returns {boolean}: true if successful, false if the value for domain is invalid or if the domain is not in the whitelist.
+     */
     function remove(domain) {
         if (typeof domain == "string") {
             var index = _whitelist.indexOf(domain)
@@ -37,16 +56,18 @@ export default (function() {
                 return false;
             }
         } else {
-            //throw new Error("Invalid value for 'domain'; expected a string representing the domain to remove from the whitelist.");
             return false;
         }
     }
 
+    /**
+     * @function clear
+     * Sets the whitelist to an empty array.
+     */
     function clear() {
         _whitelist = [];
         chrome.storage.sync.set({whitelist: []});
         chrome.runtime.sendMessage({action: "updateEvent"});
-        return true;
     }
 
     return {

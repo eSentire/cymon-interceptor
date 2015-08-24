@@ -10,7 +10,9 @@
 
                 this.removeFromWhitelist = function(domain) {
                     if (confirm("Are you sure you want to remove " + domain + " from your whitelist?")) {
-                        if (!whitelistService.removeFromWhitelist(domain)) {
+                        if (whitelistService.removeFromWhitelist(domain)) {
+                            this.domains = whitelistService.getWhitelist();
+                        } else {
                             alert("Error: " + domain + " could not be found in the whitelist.");
                         }
                     }
@@ -31,17 +33,15 @@
         return {
             restrict: "E",
             templateUrl: "/html/templates/settings.html",
-            controller: ["optionsService", "blacklistService", function(optionsService, blacklistService) {
+            controller: ["optionsService", function(optionsService) {
                 this.tags = optionsService.getTags();
                 this.fetchLookback = optionsService.getFetchLookback();
                 this.fetchInterval = optionsService.getFetchInterval();
-                this.lastFetch = blacklistService.getLastFetch();
+                this.lastFetch = optionsService.getLastFetch();
                 this.currentTime = new Date().getTime();
 
                 this.save = function () {
-                    optionsService.setTags(this.tags);
-                    optionsService.setFetchLookback(this.fetchLookback);
-                    optionsService.setFetchInterval(this.fetchInterval);
+                    optionsService.save(this.tags, this.fetchLookback, this.fetchInterval);
                 }
             }],
             controllerAs: "settingsCtrl"

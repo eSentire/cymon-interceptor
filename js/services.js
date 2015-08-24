@@ -4,28 +4,24 @@
 
     app.service("optionsService", function() {
 
-        this.getTags = function() {
-            return backgroundApp.fetcher.getTags();
+        this.save = function(tags, fetchLookback, fetchInterval) {
+            return backgroundApp.fetcher.save(tags, fetchLookback, fetchInterval);
         };
 
-        this.setTags = function(tags) {
-            return backgroundApp.fetcher.setTags(tags);
+        this.getTags = function() {
+            return backgroundApp.fetcher.getTags();
         };
 
         this.getFetchLookback = function() {
             return backgroundApp.fetcher.getFetchLookback();
         };
 
-        this.setFetchLookback = function(days) {
-            return backgroundApp.fetcher.setFetchLookback(days);
-        };
-
         this.getFetchInterval = function() {
             return backgroundApp.fetcher.getFetchInterval();
         };
 
-        this.setFetchInterval = function(hours) {
-            return backgroundApp.fetcher.setFetchInterval(hours);
+        this.getLastFetch = function() {
+            return backgroundApp.fetcher.getLastFetch();
         };
     });
 
@@ -47,12 +43,6 @@
             return backgroundApp.whitelist.get();
         };
     }]);
-
-    app.service("blacklistService", function() {
-        this.getLastFetch = function() {
-            return backgroundApp.fetcher.getLastFetch();
-        };
-    });
 
     app.service("redirectService", function() {
         this.getRedirectDestination = function() {

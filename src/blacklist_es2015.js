@@ -1,3 +1,7 @@
+/**
+ * @module Blacklist
+ * Maintains the list of domains requested from Cymon that have been deemed malicious.
+ */
 export default (function() {
     var _blacklist = [];
 
@@ -5,22 +9,33 @@ export default (function() {
         _blacklist = storage.blacklist || _blacklist;
     });
 
+    /**
+     * @function get
+     * Returns a copy of the blacklist.
+     *
+     * @returns {[]}: An array of strings representing the blacklist.
+     */
     function get() {
-        return _blacklist;
+        return JSON.parse(JSON.stringify(_blacklist));
     }
 
-    function set(blacklist) {
-        if (blacklist && blacklist.constructor === Array) {
-            _blacklist = blacklist;
-            chrome.storage.local.set({blacklist: _blacklist});
-            chrome.runtime.sendMessage({action: "updateEvent"});
-            return true;
-        } else {
-            //throw new Error("Invalid value for 'blacklist'; expected an array of strings representing the new blacklist.");
-            return false;
-        }
+    /**
+     * @function clear
+     * Sets the blacklist to an empty array.
+     */
+    function clear() {
+        _blacklist = [];
+        chrome.storage.local.set({blacklist: _blacklist});
+        chrome.runtime.sendMessage({action: "updateEvent"});
     }
 
+    /**
+     * @function add
+     * Adds an array of strings to the current blacklist.
+     *
+     * @param domains: A list of strings to be added to the blacklist.
+     * @returns {boolean}: true if successful, false if the value for domains is invalid.
+     */
     function add(domains) {
         if (domains && domains.constructor === Array) {
             var blacklistHash = {};
@@ -36,14 +51,13 @@ export default (function() {
             chrome.runtime.sendMessage({action: "updateEvent"});
             return true;
         } else {
-            //throw new Error("Invalid value for 'domains'; expected an array of strings representing domains to add to the blacklist.");
             return false;
         }
     }
 
     return {
         get: get,
-        set: set,
+        clear: clear,
         add: add
     };
 })();

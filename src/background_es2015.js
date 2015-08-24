@@ -77,6 +77,7 @@ var app = {
 
     chrome.runtime.onInstalled.addListener(function () {
         chrome.runtime.sendMessage({ action: "fetchEvent" });
+        fetcher.updateFetchTimer();
     });
 
     chrome.runtime.onStartup.addListener(function() {
