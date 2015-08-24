@@ -28,14 +28,51 @@ export default (function() {
     });
 
     /**
-     * @function fetchBlacklistForTag
+     * @function _setTags
+     * Private helper function for setTags and save functions.
+     *
+     * @param tags: An object containing the keys corresponding to Cymon's event tags, and values representing whether they should be searched or not.
+     * @returns {boolean}: true if successful, false if an invalid value is passed in for tags.
+     * @private
+     */
+    function _setTags(tags) {
+        if (tags && typeof tags === "object" && Object.keys(_tags).sort().toString() === Object.keys(tags).sort().toString() && JSON.stringify(_tags) != JSON.stringify(tags)) {
+            _tags = JSON.parse(JSON.stringify(tags));
+            chrome.storage.sync.set({tags: _tags});
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @function _setFetchLookback
+     * Private helper function for setFetchLookback and save functions.
+     *
+     * @param fetchLookback:  An integer from 1 to 3. Represents the number of days to look back.
+     * @returns {boolean}: true if successful, false if an invalid value is passed in for fetchLookback.
+     * @private
+     */
+    function _setFetchLookback(fetchLookback) {
+        if (fetchLookback && typeof fetchLookback === "number" && fetchLookback != _fetchLookback && fetchLookback % 1 === 0 && fetchLookback > 0 && fetchLookback <= 3) {
+            _fetchLookback = fetchLookback;
+            chrome.storage.sync.set({fetchLookback: _fetchLookback});
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @function _fetchBlacklistForTag
      * Private helper function, fetches blacklist for a given tag
      *
      * @param tag: Tag for webrequest; one of '_tags' above
      * @param timestamp: Timestamp of request, for validation upon return (requests that return with outdated timestamps are discarded)
      * @returns {Promise}: Resolves if request returns successfully, rejects if an error occurs
+     * @private
      */
-    function fetchBlacklistForTag(tag, timestamp) {
+    function _fetchBlacklistForTag(tag, timestamp) {
         return new Promise(function (resolve, reject) {
             var request = new XMLHttpRequest();
 
@@ -87,7 +124,7 @@ export default (function() {
         if (tags.length) {
             _timestamp = new Date().getTime();
             $.each(tags, function (index, tag) {
-                fetchBlacklistForTag(tag, _timestamp).then(function (response) {
+                _fetchBlacklistForTag(tag, _timestamp).then(function (response) {
                     if (response.timestamp == _timestamp) {
                         blacklist.add(response.domains);
                         chrome.runtime.sendMessage({action: "updateEvent"});
@@ -113,26 +150,6 @@ export default (function() {
             },
             _lastFetch > 0 ? _lastFetch + _fetchInterval * 3600000 - new Date().getTime() : 0
         );
-    }
-
-    function _setTags(tags) {
-        if (tags && typeof tags === "object" && Object.keys(_tags).sort().toString() === Object.keys(tags).sort().toString() && JSON.stringify(_tags) != JSON.stringify(tags)) {
-            _tags = JSON.parse(JSON.stringify(tags));
-            chrome.storage.sync.set({tags: _tags});
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    function _setFetchLookback(fetchLookback) {
-        if (fetchLookback && typeof fetchLookback === "number" && fetchLookback != _fetchLookback && fetchLookback % 1 === 0 && fetchLookback > 0 && fetchLookback <= 3) {
-            _fetchLookback = fetchLookback;
-            chrome.storage.sync.set({fetchLookback: _fetchLookback});
-            return true;
-        } else {
-            return false;
-        }
     }
 
     /**
