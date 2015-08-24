@@ -33,3 +33,10 @@ Cymon maintains a timeline of events associated with each domain. This field det
 **1-24 Hours**
 
 Cymon Interceptor will periodically check Cymon for updated information. This value determines how often these checks happen.
+
+## Building background.min.js
+background.min.js is compiled from four seperate files: background.js, fetcher.js, whitelist.js and blacklist.js. I build the minified file using browserify, watchify, minifyify, and babelify, using the following command:
+```
+watchify -t babelify src/background.js -d -p [minifyify --map bundle.map.json --output bundle.map.json]  -o js/background.min.js
+```
+This will generate background.min.js and place it in the js/ directory, as well as placing a source map named bundle.map.json in the root directory.

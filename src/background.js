@@ -1,6 +1,6 @@
-import Blacklist from "./blacklist_es2015";
-import Fetcher from "./fetcher_es2015.js";
-import Whitelist from "./whitelist_es2015.js";
+import Blacklist from "./blacklist.js";
+import Fetcher from "./fetcher.js";
+import Whitelist from "./whitelist.js";
 
 var app = {
     blacklist: Blacklist,
