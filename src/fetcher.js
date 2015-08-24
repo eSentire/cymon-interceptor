@@ -24,6 +24,7 @@ export default (function() {
         _fetchLookback = storage.fetchLookback || _fetchLookback;
         _fetchInterval = storage.fetchInterval || _fetchInterval;
         _lastFetch = storage.lastFetch || _lastFetch;
+        updateFetchTimer();
     });
 
     /**
