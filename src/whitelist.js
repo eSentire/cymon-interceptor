@@ -7,6 +7,7 @@ export default (function() {
 
     chrome.storage.sync.get(function (storage) {
         _whitelist = storage.whitelist || _whitelist;
+        chrome.runtime.sendMessage({action: "updateEvent"});
     });
 
     /**

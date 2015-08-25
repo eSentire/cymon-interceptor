@@ -75,14 +75,6 @@ var app = {
     ********************************Event Listeners********************************
     ******************************************************************************/
 
-    chrome.runtime.onInstalled.addListener(function () {
-        chrome.runtime.sendMessage({ action: "fetchEvent" });
-    });
-
-    chrome.runtime.onStartup.addListener(function() {
-        chrome.runtime.sendMessage({action: "updateEvent"});
-    });
-
     chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         switch (request.action) {
             //Refresh Listener

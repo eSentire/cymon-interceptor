@@ -7,6 +7,7 @@ export default (function() {
 
     chrome.storage.local.get(function (storage) {
         _blacklist = storage.blacklist || _blacklist;
+        chrome.runtime.sendMessage({action: "updateEvent"});
     });
 
     /**
