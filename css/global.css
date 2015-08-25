@@ -3,6 +3,14 @@ body {
     background-color: #1f1b1b;
 }
 
+td+td {
+    text-align: right;
+}
+
+button+button {
+    margin-left: 10px;
+}
+
 .container {
     background-color: white;
 }

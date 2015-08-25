@@ -12,8 +12,7 @@
         <tbody>
             <tr ng-repeat="domain in blocklistCtrl.domains">
                 <td>{{domain}}</td>
-                <td><button ng-click="blocklistCtrl.viewDetails(domain)">Details</button></td>
-                <td><button ng-click="blocklistCtrl.addToWhitelist(domain)">Whitelist</button></td>
+                <td><button ng-click="blocklistCtrl.viewDetails(domain)">Details</button><button ng-click="blocklistCtrl.addToWhitelist(domain)">Whitelist</button></td>
             </tr>
         </tbody>
     </table>
