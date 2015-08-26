@@ -7,11 +7,24 @@
             templateUrl: "/html/templates/whitelist.html",
             controller: ["whitelistService", function(whitelistService) {
                 this.domains = whitelistService.getWhitelist();
+                this.page = 0;
+                this.lastPage = Math.floor((this.domains.length-1)/10);
+                this.display = this.domains.slice(0,10);
+
+                this.selectPage = function(page) {
+                    if (page > this.lastPage) {
+                        page -= 1;
+                    }
+                    this.page = page;
+                    this.display = this.domains.slice(page*10, page*10+10);
+                };
 
                 this.removeFromWhitelist = function(domain) {
                     if (confirm("Are you sure you want to remove " + domain + " from your whitelist?")) {
                         if (whitelistService.removeFromWhitelist(domain)) {
                             this.domains = whitelistService.getWhitelist();
+                            this.lastPage = Math.floor((this.domains.length-1)/10);
+                            this.selectPage(this.page);
                         } else {
                             alert("Error: " + domain + " could not be found in the whitelist.");
                         }
@@ -23,7 +36,7 @@
                         whitelistService.clearWhitelist();
                         this.domains = whitelistService.getWhitelist();
                     }
-                }
+                };
             }],
             controllerAs: "whitelistCtrl"
         }

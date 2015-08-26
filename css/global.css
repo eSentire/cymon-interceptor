@@ -3,7 +3,7 @@ body {
     background-color: #1f1b1b;
 }
 
-td+td {
+td+td, th+th {
     text-align: right;
 }
 
