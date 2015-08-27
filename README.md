@@ -1,5 +1,5 @@
 # cymon-interceptor
-Cymon Interceptor is a Google Chrome extension which uses information from [cymon.oi](https://cymon.io) to intercept malicious web requests.
+Cymon Interceptor is a Google Chrome extension which uses information from [cymon.io](https://cymon.io) to intercept malicious web requests.
 
 ## Usage
 Simply install the extension from the Chrome web store, or load it from the source code (requires Developer Mode to be enabled in Chrome). If building from source, see [Building background.min.js](#building-backgroundminjs).
@@ -35,7 +35,19 @@ Cymon maintains a timeline of events associated with each domain. This field det
 Cymon Interceptor will periodically check Cymon for updated information. This value determines how often these checks happen.
 
 ## Building background.min.js
-background.min.js is compiled from four seperate files: background.js, fetcher.js, whitelist.js and blacklist.js. I build the minified file using browserify, watchify, minifyify, and babelify, using the following command:
+background.min.js is compiled from four seperate files:
+- background.js
+- fetcher.js
+- whitelist.js
+- blacklist.js
+
+I build the minified file using the following libraries, installed through **npm**:
+- [browserify](http://browserify.org/)
+- [watchify](https://github.com/substack/watchify)
+- [minifyify](https://github.com/ben-ng/minifyify)
+- [babelify](https://github.com/babel/babelify)
+
+Once installed, build using the following command:
 ```
 watchify -t babelify src/background.js -d -p [minifyify --map bundle.map.json --output bundle.map.json]  -o js/background.min.js
 ```
