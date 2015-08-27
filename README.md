@@ -2,7 +2,7 @@
 Cymon Interceptor is a Google Chrome extension which uses information from [cymon.oi](https://cymon.io) to intercept malicious web requests.
 
 ## Usage
-Simply install the extension from the Chrome web store, or load it from the source code (requires Developer Mode to be enabled in Chrome).
+Simply install the extension from the Chrome web store, or load it from the source code (requires Developer Mode to be enabled in Chrome). If building from source, see [Building background.min.js](#building-backgroundminjs).
 
 ## Whitelisting Domains
 If a domain is blocked by Cymon Interceptor and you want to allow it, you can add it to your whitelist. You can whitelist a blocked domain either from the redirect page or the popup menu (which appears when you click the icon in your browser).
