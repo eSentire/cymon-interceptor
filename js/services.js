@@ -52,7 +52,7 @@
             return {
                 url: redirectUrl,
                 domain: redirectDomain
-            }
+            };
         };
     });
 
@@ -68,7 +68,7 @@
         };
 
         //Would like to remove this
-        this.removeFromBlocklist = function (domain, callback) {
+        this.removeFromBlocklist = function (domain) {
             chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
                 chrome.tabs.sendMessage(
                     tabs[0].id,
@@ -86,7 +86,7 @@
         };
 
         this.viewDetails = function (domain) {
-            chrome.tabs.create({ url: "http://cymoncommunity-dev-wartenuq33.elasticbeanstalk.com/domain/" + encodeURIComponent(domain) })
+            chrome.tabs.create({ url: "http://cymoncommunity-dev-wartenuq33.elasticbeanstalk.com/domain/" + encodeURIComponent(domain) });
         };
     });
 })();

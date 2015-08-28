@@ -15,7 +15,7 @@
                         if (whitelistService.addToWhitelist(this.domain)) {
                             location.replace(this.url);
                         } else {
-                            alert("Error: " + this.domain + " is already in your whitelist.")
+                            alert("Error: " + this.domain + " is already in your whitelist.");
                         }
                     }
                 };
@@ -25,6 +25,6 @@
                 };
             }],
             controllerAs: "redirectCtrl"
-        }
-    })
+        };
+    });
 })();

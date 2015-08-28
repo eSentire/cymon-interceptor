@@ -47,7 +47,7 @@ export default (function() {
      */
     function remove(domain) {
         if (typeof domain == "string") {
-            var index = _whitelist.indexOf(domain)
+            var index = _whitelist.indexOf(domain);
             if (index != -1) {
                 _whitelist.splice(index, 1);
                 chrome.storage.sync.set({whitelist: _whitelist});

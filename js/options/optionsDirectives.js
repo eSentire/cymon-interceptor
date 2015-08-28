@@ -39,7 +39,7 @@
                 };
             }],
             controllerAs: "whitelistCtrl"
-        }
+        };
     });
 
     app.directive("settings", function() {
@@ -55,10 +55,10 @@
 
                 this.save = function () {
                     optionsService.save(this.tags, this.fetchLookback, this.fetchInterval);
-                }
+                };
             }],
             controllerAs: "settingsCtrl"
-        }
+        };
     });
 
     app.filter("trim", function() {

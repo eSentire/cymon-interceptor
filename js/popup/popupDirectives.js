@@ -1,5 +1,5 @@
 (function() {
-    var app = angular.module("popupDirectives", ["services"])
+    var app = angular.module("popupDirectives", ["services"]);
 
     app.directive("blocklist", function(){
         return {
@@ -26,7 +26,7 @@
                                 }
                             });
                         } else {
-                            alert("Error: " + domain + " is already in your whitelist")
+                            alert("Error: " + domain + " is already in your whitelist");
                         }
                     }
                 };
@@ -37,6 +37,6 @@
 
             }],
             controllerAs: "blocklistCtrl"
-        }
+        };
     });
 })();
